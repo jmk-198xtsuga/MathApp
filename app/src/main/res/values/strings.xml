@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">MathApp</string>
+
+    <string-array name="activities_list">
+        <item>Introduction</item>
+        <item>Numerical Representation</item>
+        <item>Complex Plane</item>
+        <item>Basic Operations</item>
+    </string-array>
+
+    <string name="introduction_header">Introduction</string>
+    <string name="introduction_body">
+        This isn\'t just a clever workaround, this actually leads to a mathematically correct
+        framework where we can define numbers, operations, relationships, and all of the familiar
+        mathematics, and methodically, repeatably arrive at the correct solutions to a diverse range
+        of problems.  These solutions are even an essential "elementary" piece of most modern
+        engineering, including electronics, physics, mechanical engineering, population modelling,
+        and so forth.
+    </string>
+</resources>
