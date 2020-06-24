@@ -33,4 +33,11 @@ public class ComplexUnitTest {
             negativeiCartesian = new ComplexDoubleCartesian( 0d, -1d );
         }
     }
+
+    @Test
+    public void comparisonTest() {
+        assertEquals(0d, new Double(0));
+        assertEquals( new Double(0d), 0);
+        assertEquals( 0d, (Number) new Double(0));
+    }
 }

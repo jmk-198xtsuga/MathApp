@@ -176,7 +176,7 @@ public class ComplexDoublePolar extends Complex<Double> {
             /* Check for coaxial equality with mismatched modulus signs */
             tModulus = -tModulus;
             if (tModulus.equals(oModulus)) {
-                if (tArgument > 0) tArgument -= Math.PI;
+                if (tArgument > 0d) tArgument -= Math.PI;
                 else tArgument += Math.PI;
                 return tArgument.equals(oArgument);
             }

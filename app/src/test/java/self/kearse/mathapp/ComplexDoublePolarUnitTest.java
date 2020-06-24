@@ -173,17 +173,18 @@ public class ComplexDoublePolarUnitTest {
             assertEquals(negativeiModulus * negativeiModulus,
                     negativeiPolar.multiply(negativeiPolar.complement()));
         }
+    }
 
-        @Test
-        void EqualityTest() {
-            Complex<Double> anotherFortyTwoPolar = new ComplexDoublePolar(0d, 42d);
-            assertEquals(fortytwoPolar, fortytwoPolar);
-            assertEquals(anotherFortyTwoPolar, fortytwoPolar);
-            assertEquals(fortytwoPolar, anotherFortyTwoPolar);
-            Complex<Double> fortytwoCartesian = new ComplexDoubleCartesian(42d, 0d);
-            assertEquals(fortytwoPolar, fortytwoCartesian);
-            assertEquals(fortytwoPolar, new Double(42d));
-            assertEquals(fortytwoPolar, 42d);
-        }
+    @Test
+    void EqualityTest() {
+        Complex<Double> fortytwoPolar = new ComplexDoublePolar(0d, 42d);
+        Complex<Double> anotherFortyTwoPolar = new ComplexDoublePolar(0d, 42d);
+        assertEquals(fortytwoPolar, fortytwoPolar);
+        assertEquals(anotherFortyTwoPolar, fortytwoPolar);
+        assertEquals(fortytwoPolar, anotherFortyTwoPolar);
+        Complex<Double> fortytwoCartesian = new ComplexDoubleCartesian(42d, 0d);
+        assertEquals(fortytwoPolar, fortytwoCartesian);
+        assertEquals(fortytwoPolar, new Double(42d));
+        assertEquals(fortytwoPolar, 42d);
     }
 }
