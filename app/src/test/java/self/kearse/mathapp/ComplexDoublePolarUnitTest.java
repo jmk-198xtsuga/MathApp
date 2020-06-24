@@ -25,7 +25,7 @@ public class ComplexDoublePolarUnitTest {
      */
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class constructorTests {
+    public class ConstructorTests {
         Complex<Double> onePolar;
         Complex<Double> fortytwoPolar;
         Complex<Double> negativeiPolar;
@@ -214,6 +214,29 @@ public class ComplexDoublePolarUnitTest {
         public void lesserTypes() {
             assertEquals(fortytwoPolar, new Double(42d));
             assertEquals(fortytwoPolar, 42d);
+        }
+    }
+
+    @Nested
+    public class MathTests {
+        @Test
+        public void addTests() {
+            assertEquals(new ComplexDoubleCartesian(2d, 2d),
+                    (new ComplexDoublePolar(0d,2d)).add(
+                            new ComplexDoublePolar(Math.PI/2d, 2d)
+                    ));
+        }
+        @Test
+        public void multiplyTests() {
+            assertEquals(new ComplexDoublePolar(4d,6d),
+                    (new ComplexDoublePolar(1d, 3d)).multiply(
+                            new ComplexDoublePolar(3d, 2d)
+                    ));
+        }
+        @Test
+        public void LogarithmTests() {
+            assertEquals(new ComplexDoubleCartesian(Math.log(42d), 3d),
+                    new ComplexDoublePolar(3d,42d).Log());
         }
     }
 }
