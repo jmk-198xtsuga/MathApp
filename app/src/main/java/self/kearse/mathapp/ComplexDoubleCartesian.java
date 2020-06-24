@@ -18,10 +18,19 @@ public class ComplexDoubleCartesian extends Complex<Double> {
      */
     @Override
     public Double Argument() {
-        double Argument = Math.atan(imaginary / real);
-        if (real < 0d) {
-            if (Argument < 0d) Argument += Math.PI;
-            else Argument -= Math.PI;
+        double Argument;
+        if (real == 0d) {
+            if (imaginary == 0d) {
+                Argument = 0d;
+            } else {
+                Argument = Math.PI/2d;
+            }
+        } else {
+            Argument = Math.atan(imaginary / real);
+            if (real < 0d) {
+                if (Argument < 0d) Argument += Math.PI;
+                else Argument -= Math.PI;
+            }
         }
         return Argument;
     }
