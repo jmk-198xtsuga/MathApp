@@ -170,7 +170,10 @@ public class ComplexDoublePolar extends Complex<Double> {
         Double tModulus = this.modulus();
         Number oArgument = o.Argument();
         Number oModulus = o.modulus();
-        if ( (tArgument.equals(oArgument)) && (tModulus.equals(oModulus)) ) {
+        if (tModulus.equals(0d) && oModulus.equals(0d)) {
+            return true;
+        }
+        else if ( (tArgument.equals(oArgument)) && (tModulus.equals(oModulus)) ) {
                 return true;
         } else {
             /* Check for coaxial equality with mismatched modulus signs */
