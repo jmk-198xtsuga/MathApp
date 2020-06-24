@@ -130,11 +130,15 @@ public class ComplexDoublePolarUnitTest {
     public class DerivativesTests {
         Complex<Double> fortytwoPolar;
         Complex<Double> negativeiPolar;
+        Complex<Double> zero;
+        Complex<Double> one;
 
         @BeforeAll
         public void sampleConstructions() {
             fortytwoPolar = new ComplexDoublePolar(0d, 42d);
             negativeiPolar = new ComplexDoublePolar(-Math.PI / 2, 1d);
+            zero = new ComplexDoublePolar(0d, 0d);
+            one = new ComplexDoublePolar(0d, 1d);
         }
 
         @Test
@@ -151,40 +155,65 @@ public class ComplexDoublePolarUnitTest {
 
         @Test
         void AddInverseTest() {
-            //TODO: equality check inspection
-            assertEquals(new Double(0d), fortytwoPolar.add(fortytwoPolar.addInverse()));
-            assertEquals(new Double(0d), negativeiPolar.add(negativeiPolar.addInverse()));
+            //TODO: revert to primitive zero if possible
+            assertEquals(zero, fortytwoPolar.add(fortytwoPolar.addInverse()));
+            assertEquals(zero, negativeiPolar.add(negativeiPolar.addInverse()));
         }
 
         @Test
         void MultiplyInverseTest() {
-            //TODO: equality check inspection
-            assertEquals(new Double(1d), fortytwoPolar.multiply(fortytwoPolar.multInverse()));
-            assertEquals(new Double(1d), negativeiPolar.multiply(negativeiPolar.multInverse()));
+            //TODO: revert to primitive one if possible
+            assertEquals(one, fortytwoPolar.multiply(fortytwoPolar.multInverse()));
+            assertEquals(one, negativeiPolar.multiply(negativeiPolar.multInverse()));
         }
 
         @Test
         void ComplementTest() {
-            //TODO: equality check inspection
+            //TODO: revert to primitive squares of modulus if possible
             Double fortytwoModulus = fortytwoPolar.modulus();
             Double negativeiModulus = negativeiPolar.modulus();
-            assertEquals(fortytwoModulus * fortytwoModulus,
+            assertEquals(new ComplexDoublePolar(0d, fortytwoModulus * fortytwoModulus),
                     fortytwoPolar.multiply(fortytwoPolar.complement()));
-            assertEquals(negativeiModulus * negativeiModulus,
+            assertEquals(new ComplexDoublePolar(0d, negativeiModulus * negativeiModulus),
                     negativeiPolar.multiply(negativeiPolar.complement()));
         }
     }
 
-    @Test
-    void EqualityTest() {
-        Complex<Double> fortytwoPolar = new ComplexDoublePolar(0d, 42d);
-        Complex<Double> anotherFortyTwoPolar = new ComplexDoublePolar(0d, 42d);
-        assertEquals(fortytwoPolar, fortytwoPolar);
-        assertEquals(anotherFortyTwoPolar, fortytwoPolar);
-        assertEquals(fortytwoPolar, anotherFortyTwoPolar);
-        Complex<Double> fortytwoCartesian = new ComplexDoubleCartesian(42d, 0d);
-        assertEquals(fortytwoPolar, fortytwoCartesian);
-        assertEquals(fortytwoPolar, new Double(42d));
-        assertEquals(fortytwoPolar, 42d);
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    public class EqualityTests {
+        Complex<Double> fortytwoPolar;
+        Complex<Double> anotherFortyTwoPolar;
+        Double fortytwoDouble;
+
+        @BeforeAll
+        public void sampleConstructions() {
+            fortytwoPolar = new ComplexDoublePolar(0d, 42d);
+            anotherFortyTwoPolar = new ComplexDoublePolar(0d, 42d);
+            fortytwoDouble = new Double(42d);
+        }
+
+        @Test
+        public void identityCheck() {
+            assertEquals(fortytwoPolar, fortytwoPolar);
+        }
+
+        @Test
+        public void equalFields() {
+            assertEquals(anotherFortyTwoPolar, fortytwoPolar);
+            assertEquals(fortytwoPolar, anotherFortyTwoPolar);
+        }
+
+        @Test
+        public void cartesianForm() {
+            Complex<Double> fortytwoCartesian = new ComplexDoubleCartesian(42d, 0d);
+            assertEquals(fortytwoPolar, fortytwoCartesian);
+        }
+
+        @Test
+        public void lesserTypes() {
+            assertEquals(fortytwoPolar, new Double(42d));
+            assertEquals(fortytwoPolar, 42d);
+        }
     }
 }
