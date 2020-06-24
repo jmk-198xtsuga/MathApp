@@ -2,7 +2,7 @@
 
 ## Introduction
 MathApp is currently a hobbyist project I'm working on, trying to develop some Java code for interacting with some
-of the mathematics I've worked with through the years.  At this point it is still very very much in its infancy,
+of the mathematics I've worked with through recent years.  At this point it is still very very much in its infancy,
 and my current goal is developing a working structure for complex numbers and computations on them.  The higher
 aspirations of having full Java generic support or type polymorphism is going to be the second phase after primitive
 complex mathematical functions, because I am trying to avoid getting stuck on the fine details this early on.
