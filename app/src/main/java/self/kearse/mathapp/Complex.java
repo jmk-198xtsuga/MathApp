@@ -43,7 +43,7 @@ public abstract class Complex <T extends Number> {
      * @return a new Complex number representing the sum of the two numbers
      * @throws NullPointerException if other is null
      */
-    public abstract Complex<T> add (Complex<? extends T> other) throws NullPointerException;
+    public abstract Complex<T> add (Complex<? extends Number> other) throws NullPointerException;
 
     /**
      * Subtracts another Complex number from this.
@@ -51,7 +51,7 @@ public abstract class Complex <T extends Number> {
      * @return a new Complex number representing the difference of the two numbers
      * @throws NullPointerException if other is null
      */
-    public Complex<T> subtract (Complex<? extends T> other) throws NullPointerException {
+    public Complex<T> subtract (Complex<? extends Number> other) throws NullPointerException {
         if (other == null) {
             throw new NullPointerException("Cannot subtract a null reference");
         }
@@ -63,7 +63,7 @@ public abstract class Complex <T extends Number> {
      * @return a new Complex number representing the product of the two numbers
      * @throws NullPointerException if other is null
      */
-    public abstract Complex<T> multiply (Complex<? extends T> other) throws NullPointerException;
+    public abstract Complex<T> multiply (Complex<? extends Number> other) throws NullPointerException;
 
     /**
      * Divides this by another complex number.  Should utilize the complement of the denominator
@@ -73,7 +73,7 @@ public abstract class Complex <T extends Number> {
      * @throws ArithmeticException if denominator is zero
      * @throws NullPointerException if denominator is null
      */
-    public Complex<T> divide (Complex<? extends T> denominator)
+    public Complex<T> divide (Complex<? extends Number> denominator)
             throws ArithmeticException, NullPointerException {
         if (denominator == null) {
             throw new NullPointerException("Cannot divide by a null reference");
@@ -98,25 +98,27 @@ public abstract class Complex <T extends Number> {
         /* Reflexive equality check */
         else if (this == other) return true;
         /* Begin external type checking */
-        else if ( (this.Argument().equals(0)) && ! (other instanceof Complex) ) {
-            /* We are positively oriented on the Real number line,
-             * and comparable to other Number types */
-            return this.modulus().equals(other);
-        }
-        else if ( this.imaginary().equals(0) ) {
-            /* We are negatively oriented on the Real axis,
-             * and comparable to other Number types */
-            return this.addInverse().modulus().equals(other);
-        }
-        else //noinspection RedundantIfStatement
-            if ( !(other instanceof Complex) ) {
-            /* We certainly have a complex component and are comparing to something without one */
-            return false;
+        else if (!(other instanceof Complex)) {
+            if (other instanceof Number) {
+                /* We are positively oriented on the Real number line,
+                 * and comparable to other Number types */
+                if (this.Argument().equals(0d)) {
+                    return this.modulus().doubleValue() == ((Number) other).doubleValue();
+                } else if (this.imaginary().doubleValue() == 0d) {
+                    /* We are negatively oriented on the Real axis,
+                     * and comparable to other Number types */
+                    return this.addInverse().modulus().doubleValue() == ((Number) other).doubleValue();
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
         /* End external type checking */
         else {
             /* From here rely on implementing classes to complete verification, so return
-            * a presumptive true */
+             * a presumptive true */
             return true;
         }
     }
@@ -127,19 +129,28 @@ public abstract class Complex <T extends Number> {
      * @return a new Complex number representing the exponentiation result
      * @throws NullPointerException if exponent is null
      */
-    public Complex<T> pow (Complex<? extends T> exponent) throws NullPointerException {
+    public Complex<Double> pow (Complex<? extends Number> exponent) throws NullPointerException {
         if (exponent == null) {
             throw new NullPointerException("cannot exponentiate by a null reference");
         }
-        else return Exp(this.Log().multiply(exponent));
+        else return Exp(Log(this).multiply(exponent));
     }
 
     /**
      * Determines the principal complex Logarithm of this
      * @return a new Complex number representing the Logarithm
-     * @throws ArithmeticException if this is zero
+     * @throws ArithmeticException if the modulus of value is zero
+     * @throws NullPointerException if value is null
      */
-    public abstract Complex<T> Log () throws NullPointerException;
+    public static Complex<Double> Log (Complex<? extends Number> value)
+            throws NullPointerException, ArithmeticException {
+        if (value.modulus().equals(0d)) {
+            throw new ArithmeticException("Cannot take the logarithm of 0");
+        } else {
+            return new ComplexDoubleCartesian(Math.log(value.modulus().doubleValue()),
+                    value.Argument().doubleValue());
+        }
+    }
 
     /**
      * Determines the principal exponentiation of the natural logarithm <i>e</i> to a given exponent.
@@ -147,7 +158,10 @@ public abstract class Complex <T extends Number> {
      * @return a new Complex number representing the exponentiation result
      * @throws NullPointerException if exponent is null
      */
-    public abstract Complex<T> Exp (Complex<? extends T> exponent) throws NullPointerException;
+    public static Complex<Double> Exp (Complex<? extends Number> exponent) throws NullPointerException {
+        return new ComplexDoublePolar(exponent.imaginary().doubleValue(),
+                Math.exp(exponent.real().doubleValue()));
+    }
 
     /**
      * Formats the Complex number as a String.
@@ -162,4 +176,5 @@ public abstract class Complex <T extends Number> {
      * @return a string with the LaTeX-style math code for the Complex Number, without delimiters
      */
     public abstract String toLaTeX();
+
 }

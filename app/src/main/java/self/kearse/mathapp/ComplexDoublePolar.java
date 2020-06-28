@@ -101,13 +101,13 @@ public class ComplexDoublePolar extends Complex<Double> {
      * @throws NullPointerException if other is null
      */
     @Override
-    public Complex<Double> add(Complex<? extends Double> other) throws NullPointerException {
+    public Complex<Double> add(Complex<? extends Number> other) throws NullPointerException {
         if (other == null) {
             throw new NullPointerException("Cannot add a null reference");
         }
         else {
-            Double real = this.real() + other.real();
-            Double imaginary = this.imaginary() + other.imaginary();
+            Double real = this.real() + other.real().doubleValue();
+            Double imaginary = this.imaginary() + other.imaginary().doubleValue();
             return new ComplexDoubleCartesian(real, imaginary);
         }
     }
@@ -118,34 +118,14 @@ public class ComplexDoublePolar extends Complex<Double> {
      * @throws NullPointerException if other is null
      */
     @Override
-    public Complex<Double> multiply(Complex<? extends Double> other) throws NullPointerException {
+    public Complex<Double> multiply(Complex<? extends Number> other) throws NullPointerException {
         if (other == null) {
             throw new NullPointerException("Cannot add a null pointer");
         } else {
-            Double argument = this.argument + other.Argument();
-            Double modulus = this.modulus * other.modulus();
+            Double argument = this.argument + other.Argument().doubleValue();
+            Double modulus = this.modulus * other.modulus().doubleValue();
             return new ComplexDoublePolar(argument, modulus);
         }
-    }
-
-    /**
-     * Determines the principal complex Logarithm of this
-     * @return a new Complex number representing the Logarithm
-     * @throws ArithmeticException if this is zero
-     */
-    @Override
-    public Complex<Double> Log() throws ArithmeticException {
-        if (this.modulus.equals(0d)) {
-            throw new ArithmeticException("Cannot take the logarithm of 0");
-        } else {
-            return new ComplexDoubleCartesian(Math.log(modulus), argument);
-        }
-    }
-
-    //TODO: from here down, document!
-    @Override
-    public Complex<Double> Exp(Complex<? extends Double> exponent) throws NullPointerException {
-        return new ComplexDoublePolar(imaginary(), real());
     }
 
     @Override
@@ -163,14 +143,15 @@ public class ComplexDoublePolar extends Complex<Double> {
     public boolean equals(Object other) {
         /* Use Complex parent class equality checks */
         if (!super.equals(other)) return false;
+        if (!(other instanceof Complex)) return true;
         @SuppressWarnings("unchecked")
         Complex<Number> o = (Complex<Number>) other;
         /* Component-wise equality check */
         Double tArgument = this.Argument();
         Double tModulus = this.modulus();
-        Number oArgument = o.Argument();
-        Number oModulus = o.modulus();
-        if (tModulus.equals(0d) && oModulus.equals(0d)) {
+        double oArgument = o.Argument().doubleValue();
+        double oModulus = o.modulus().doubleValue();
+        if (tModulus.equals(0d) && (oModulus == 0d)) {
             return true;
         }
         else if ( (tArgument.equals(oArgument)) && (tModulus.equals(oModulus)) ) {

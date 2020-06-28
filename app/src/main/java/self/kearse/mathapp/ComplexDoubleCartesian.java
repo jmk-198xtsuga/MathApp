@@ -73,26 +73,18 @@ public class ComplexDoubleCartesian extends Complex<Double> {
     }
 
     @Override
-    public Complex<Double> add(Complex<? extends Double> other) throws NullPointerException {
-        return new ComplexDoubleCartesian(this.real + other.real(),
-                this.imaginary + other.imaginary());
+    public Complex<Double> add(Complex<? extends Number> other) throws NullPointerException {
+        return new ComplexDoubleCartesian(this.real + other.real().doubleValue(),
+                this.imaginary + other.imaginary().doubleValue());
     }
 
     @Override
-    public Complex<Double> multiply(Complex<? extends Double> other) throws NullPointerException {
-        Double real = (this.real * other.real()) - (this.imaginary * other.imaginary());
-        Double imaginary = (this.real * other.imaginary()) + (this.imaginary * other.real());
+    public Complex<Double> multiply(Complex<? extends Number> other) throws NullPointerException {
+        Double real = (this.real * other.real().doubleValue()) -
+                (this.imaginary * other.imaginary().doubleValue());
+        Double imaginary = (this.real * other.imaginary().doubleValue()) +
+                (this.imaginary * other.real().doubleValue());
         return new ComplexDoubleCartesian(real, imaginary);
-    }
-
-    @Override
-    public Complex<Double> Log() throws NullPointerException {
-        return new ComplexDoubleCartesian(modulus(), Argument());
-    }
-
-    @Override
-    public Complex<Double> Exp(Complex<? extends Double> exponent) throws NullPointerException {
-        return new ComplexDoublePolar(this.real, this.imaginary);
     }
 
     @Override
@@ -115,8 +107,8 @@ public class ComplexDoubleCartesian extends Complex<Double> {
         /* Component-wise equality check */
         Double tReal = this.real;
         Double tImaginary = this.imaginary;
-        Number oReal = o.real();
-        Number oImaginary = o.imaginary();
+        double oReal = o.real().doubleValue();
+        double oImaginary = o.imaginary().doubleValue();
         return (tReal.equals(oReal)) && (tImaginary.equals(oImaginary));
     }
 }

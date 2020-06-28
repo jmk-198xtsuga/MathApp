@@ -190,7 +190,7 @@ public class ComplexDoublePolarUnitTest {
         public void sampleConstructions() {
             fortytwoPolar = new ComplexDoublePolar(0d, 42d);
             anotherFortyTwoPolar = new ComplexDoublePolar(0d, 42d);
-            fortytwoDouble = new Double(42d);
+            fortytwoDouble = 42d;
         }
 
         @Test
@@ -213,6 +213,8 @@ public class ComplexDoublePolarUnitTest {
         @Test
         public void lesserTypes() {
             assertEquals(fortytwoPolar, new Double(42d));
+            assertNotEquals(fortytwoPolar, new Double(41d));
+            assertNotEquals(fortytwoPolar, new Double(-42d));
             assertEquals(fortytwoPolar, 42d);
         }
     }
@@ -233,10 +235,19 @@ public class ComplexDoublePolarUnitTest {
                             new ComplexDoublePolar(3d, 2d)
                     ));
         }
-        @Test
-        public void LogarithmTests() {
-            assertEquals(new ComplexDoubleCartesian(Math.log(42d), 3d),
-                    new ComplexDoublePolar(3d,42d).Log());
+
+        @Nested
+        public class ExponentialTests {
+            @Test
+            public void logarithmTest() {
+                assertEquals(new ComplexDoubleCartesian(Math.log(42d), 3d),
+                        Complex.Log(new ComplexDoublePolar(3d,42d)));
+            }
+            @Test
+            public void exponentTest() {
+                assertEquals(new ComplexDoublePolar(Math.PI/2d, 1d),
+                        Complex.Exp(new ComplexDoublePolar(Math.PI/2d,Math.PI/2d)));
+            }
         }
     }
 }
