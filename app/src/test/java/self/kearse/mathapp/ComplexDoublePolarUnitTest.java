@@ -144,7 +144,9 @@ public class ComplexDoublePolarUnitTest {
         @Test
         void RealTest() {
             assertEquals(new Double(42d), fortytwoPolar.real());
-            assertTrue(Math.abs(negativeiPolar.real() - 0d) < TOLERANCE);
+            Double realError = Math.abs(negativeiPolar.real() - 0d);
+            assertTrue(realError < TOLERANCE,
+                    String.format("Maximum error: %s, actual: %s", TOLERANCE, realError));
         }
 
         @Test
@@ -234,20 +236,6 @@ public class ComplexDoublePolarUnitTest {
                     (new ComplexDoublePolar(1d, 3d)).multiply(
                             new ComplexDoublePolar(3d, 2d)
                     ));
-        }
-
-        @Nested
-        public class ExponentialTests {
-            @Test
-            public void logarithmTest() {
-                assertEquals(new ComplexDoubleCartesian(Math.log(42d), 3d),
-                        Complex.Log(new ComplexDoublePolar(3d,42d)));
-            }
-            @Test
-            public void exponentTest() {
-                assertEquals(new ComplexDoublePolar(Math.PI/2d, 1d),
-                        Complex.Exp(new ComplexDoublePolar(Math.PI/2d,Math.PI/2d)));
-            }
         }
     }
 }
