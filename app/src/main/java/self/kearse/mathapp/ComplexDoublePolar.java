@@ -29,14 +29,11 @@ public class ComplexDoublePolar extends Complex<Double> {
      */
     @Override
     public Double Argument() {
-        if ( (this.argument > Math.PI) || (this.argument <= -Math.PI) ) {
-            this.argument = this.argument % (2 * Math.PI);
-            if (this.argument > Math.PI) {
-                this.argument -= (2 * Math.PI);
-            }
-            else if (this.argument <= -Math.PI) {
-                this.argument += (2 * Math.PI);
-            }
+        if(this.modulus < 0) {
+            this.argument = principalArgument(this.argument + Math.PI);
+            this.modulus = -this.modulus;
+        } else {
+            this.argument = principalArgument(this.argument);
         }
         return this.argument;
     }
@@ -112,7 +109,8 @@ public class ComplexDoublePolar extends Complex<Double> {
         }
     }
 
-    /** Multiplies another Complex number with this.
+    /**
+     * Multiplies another Complex number with this.
      * @param other another Complex number
      * @return a new Complex number representing the product of the two numbers, in polar form
      * @throws NullPointerException if other is null
@@ -128,17 +126,30 @@ public class ComplexDoublePolar extends Complex<Double> {
         }
     }
 
+    /**
+     * Formats this number for String output.
+     * @return "&lt;m&gt;*e^(i*&lt;a&gt;)", such as "3*e^(i*1.57)"
+     */
     @Override
     @NonNull
     public String toString() {
         return String.format("%s*e^(i*%s)", this.modulus.toString(), this.argument.toString());
     }
 
+    /**
+     * Formats this number for LaTeX.
+     * @return "&lt;m&gt;\,e^{&lt;a&gt;i}", such as "3\,e^{1.57i}"
+     */
     @Override
     public String toLaTeX() {
         return String.format("%s\\,e^{%s\\,i}", this.modulus.toString(), this.argument.toString());
     }
 
+    /**
+     * Checks for equality with another Object.
+     * @param other the object to compare to
+     * @return true if other is an equivalent numerical value, false otherwise.
+     */
     @Override
     public boolean equals(Object other) {
         /* Use Complex parent class equality checks */
@@ -166,5 +177,28 @@ public class ComplexDoublePolar extends Complex<Double> {
             }
             else return false;
         }
+    }
+
+    /**
+     * Computes the principal Argument of a given argument.
+     * @param argument a value in radians
+     * @return The radian value in the range -&pi;&nbsp;&lt;&nbsp;arg&nbsp;&leq;&nbsp;&pi;
+     * @throws IllegalArgumentException if argument is null
+     */
+    private Double principalArgument(Number argument) throws IllegalArgumentException {
+        if (argument == null) {
+            throw new IllegalArgumentException("Cannot take the argument of null");
+        }
+        Double arg = argument.doubleValue();
+        if ( (arg > Math.PI) || (arg <= -Math.PI) ) {
+            arg = arg % (2 * Math.PI);
+            if (arg > Math.PI) {
+                arg -= (2 * Math.PI);
+            }
+            else if (arg <= -Math.PI) {
+                arg += (2 * Math.PI);
+            }
+        }
+        return arg;
     }
 }
