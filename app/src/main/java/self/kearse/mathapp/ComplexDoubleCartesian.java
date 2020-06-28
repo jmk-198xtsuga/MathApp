@@ -102,6 +102,8 @@ public class ComplexDoubleCartesian extends Complex<Double> {
     public boolean equals(Object other) {
         /* Use Complex parent class equality checks */
         if (!super.equals(other)) return false;
+        if (!(other instanceof Complex)) return true;
+        if (!(other instanceof Complex)) return true;
         @SuppressWarnings("unchecked")
         Complex<Number> o = (Complex<Number>) other;
         /* Component-wise equality check */
