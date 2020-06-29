@@ -2,6 +2,9 @@ package self.kearse.mathapp;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A representation of complex numbers and set of operations for interacting with them.
  * @param <T> The numerical type for representing component values, logically should be either
@@ -161,6 +164,37 @@ public abstract class Complex <T extends Number> {
     public static Complex<Double> Exp (Complex<? extends Number> exponent) throws NullPointerException {
         return new ComplexDoublePolar(exponent.imaginary().doubleValue(),
                 Math.exp(exponent.real().doubleValue()));
+    }
+
+    /**
+     * Determines the principal <i>n</i>-th root of the given value
+     * @param value the number to find the root of
+     * @param degree the exponent <i>n</i> such that (root)^n=value
+     * @return a new Complex number with the principal n-th root
+     * @throws NullPointerException if value is null
+     * @throws IllegalArgumentException if degree is zero
+     */
+    public static Complex<Double> root (Complex<? extends Number> value, int degree)
+            throws NullPointerException, IllegalArgumentException {
+        //TODO: method body
+        return new ComplexDoublePolar(0d,1d);
+    }
+
+    /**
+     * Determines the principal <i>n</i>-th roots of the given value
+     * @param value the number to find the roots of
+     * @param degree the exponent <i>n</i> such that (root)^n=value
+     * @return a new List of Complex numbers representing the <i>n</i> unique roots of value
+     * @throws NullPointerException if value is null
+     * @throws IllegalArgumentException if degree is zero
+     */
+    public static List<Complex<Double>> roots (Complex<? extends Number> value, int degree)
+        throws NullPointerException, IllegalArgumentException {
+        //TODO: method body
+        List<Complex<Double>> list = new ArrayList<Complex<Double>>();
+        Complex<Double> principal = root(value, degree);
+        list.add(principal);
+        return list;
     }
 
     /**
