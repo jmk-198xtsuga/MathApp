@@ -7,6 +7,23 @@ and my current goal is developing a working structure for complex numbers and co
 aspirations of having full Java generic support or type polymorphism is going to be the second phase after primitive
 complex mathematical functions, because I am trying to avoid getting stuck on the fine details this early on.
 
+## Current Focus / Planned Goals
+Right now I am wanting to build a (hopefully) solid foundation for future mathematics, by writing a sturdy
+implementation of Complex numbers.  I want to have generic methods that handle everything possible
+at their specific level, while leaving certain methods for lesser classes for concrete implementations.
+Currently, the goal is to get some basic math working in both polar and Cartesian represented numbers
+with underlying Double fields, which eventually I hope to revert to generic polar and Cartesian
+methods, and bring in a String / Stream / List field type.  The math may be entirely unnecessary on an
+Android device, but I'm hoping for one project to show type-independent algorithmic implementation of
+math on larger numbers than Double or Long.
+
+The first major target is to generate a list of the roots of a complex number, list those in a contemporary
+Android UI View, and plot them on a unit circle for visualization.  Next will be implementing some variety
+of a mathematical calculation and graphing module.  Then I hope to branch out and also work on differential
+equations models with methods comparable to what I learned in Numerical Analysis (Adams-Bashforth and Adams-Moulton
+multi-step methods for numerical approximation).  Take these goals with a grain of salt, as the saying goes, because
+this will be fully dependent on the availability of free time to work on this.
+
 ## License
 This project as currently available is published AS IS and with NO WARRANTY of fitness for any purpose.
 Reuse of code is freely allowed for non-profit-generating pursuits with attribution, and to conserve future
