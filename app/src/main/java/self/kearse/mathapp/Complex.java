@@ -12,6 +12,7 @@ import java.util.List;
  * @author Justin Kearse
  */
 public abstract class Complex <T extends Number> {
+    /** The allowed error for certain methods and algorithms */
     private static double TARGET_PRECISION = 1E-16;
     /** Returns the principal Argument of this. */
     public abstract T Argument ();
