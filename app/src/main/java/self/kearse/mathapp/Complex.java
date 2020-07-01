@@ -250,6 +250,7 @@ public abstract class Complex <T extends Number> {
         while (delta > TARGET_PRECISION) {
             Double next = decValue * ((oneLess * root) + (value.doubleValue()/Math.pow(root, oneLess)));
             delta = Math.abs(next - root);
+            root = next;
         }
         /* Coerce root to integer when appropriate */
         int intValue = root.intValue();
