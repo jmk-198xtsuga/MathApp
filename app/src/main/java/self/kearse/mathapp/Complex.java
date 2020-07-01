@@ -12,6 +12,7 @@ import java.util.List;
  * @author Justin Kearse
  */
 public abstract class Complex <T extends Number> {
+    private static double TARGET_PRECISION = 1E-16;
     /** Returns the principal Argument of this. */
     public abstract T Argument ();
     /** Returns the modulus of this. */
@@ -177,7 +178,14 @@ public abstract class Complex <T extends Number> {
     public static Complex<Double> root (Complex<? extends Number> value, int degree)
             throws NullPointerException, IllegalArgumentException {
         //TODO: method body
-        return new ComplexDoublePolar(0d,1d);
+        Double modulus = rootNewton(value.modulus(), degree);
+        Double Argument = value.Argument().doubleValue();
+        if (Argument.equals(0d)) {
+            Argument = (Math.PI / degree) * 2d;
+        } else {
+            Argument = Argument / degree;
+        };
+        return new ComplexDoublePolar(Argument, modulus);
     }
 
     /**
@@ -193,7 +201,14 @@ public abstract class Complex <T extends Number> {
         //TODO: method body
         List<Complex<Double>> list = new ArrayList<Complex<Double>>();
         Complex<Double> principal = root(value, degree);
+        Double modulus = principal.modulus();
+        Double argument = principal.Argument();
         list.add(principal);
+        double argIncrement = (Math.PI / degree) * 2d;
+        for (int i = 1; i < degree; i++) {
+            argument += argIncrement;
+            list.add(new ComplexDoublePolar(argument, modulus));
+        }
         return list;
     }
 
@@ -210,5 +225,37 @@ public abstract class Complex <T extends Number> {
      * @return a string with the LaTeX-style math code for the Complex Number, without delimiters
      */
     public abstract String toLaTeX();
+
+    /**
+     * Computes the n-th root of a Real number.  Utilizes a exponent/logarithm computation to seed
+     * the guess and follows with a Newton algorithm (see
+     * <a href=https://en.wikipedia.org/wiki/Nth_root_algorithm>https://en.wikipedia.org/wiki/Nth_root_algorithm</a>)
+     * @param value a real number
+     * @param degree the degree of the root
+     * @return the real value such that raising it to degree yields value (within approximation)
+     * @throws NullPointerException if value is null
+     */
+    private static Double rootNewton (Number value, int degree) throws NullPointerException {
+        if (value == null) {
+            throw new NullPointerException("Cannot take the root of null");
+        }
+        /* Short-circuit for roots of zero and one*/
+        if (0d == value.doubleValue()) return 0d;
+        else if (1d == value.doubleValue()) return 1d;
+
+        Double decValue = 1d/degree;
+        int oneLess = degree - 1;
+        Double delta = 1d;
+        Double root = Math.exp(decValue*Math.log(value.doubleValue()));
+        while (delta > TARGET_PRECISION) {
+            Double next = decValue * ((oneLess * root) + (value.doubleValue()/Math.pow(root, oneLess)));
+            delta = Math.abs(next - root);
+        }
+        /* Coerce root to integer when appropriate */
+        int intValue = root.intValue();
+        if (Math.pow(intValue, degree) == value.doubleValue()) root = new Double(intValue);
+        /* End integer coercion */
+        return root;
+    }
 
 }

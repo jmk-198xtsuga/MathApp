@@ -25,6 +25,9 @@ public class ComplexDoubleCartesian extends Complex<Double> {
             } else {
                 Argument = Math.PI/2d;
             }
+        } else if (imaginary == 0d) {
+            if (real > 0) Argument = 0d;
+            else Argument = Math.PI;
         } else {
             Argument = Math.atan(imaginary / real);
             if (real < 0d) {
@@ -102,7 +105,6 @@ public class ComplexDoubleCartesian extends Complex<Double> {
     public boolean equals(Object other) {
         /* Use Complex parent class equality checks */
         if (!super.equals(other)) return false;
-        if (!(other instanceof Complex)) return true;
         if (!(other instanceof Complex)) return true;
         @SuppressWarnings("unchecked")
         Complex<Number> o = (Complex<Number>) other;
