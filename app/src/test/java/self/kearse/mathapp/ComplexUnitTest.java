@@ -116,11 +116,13 @@ public class ComplexUnitTest {
         @TestInstance(TestInstance.Lifecycle.PER_CLASS)
         public class rootsTest {
             int quarterPiCount = 0;
+            Complex<Double> negativeOne;
             List<Complex<Double>> list;
             @BeforeAll
             public void generateRoots() {
                 Complex<Double> quarterPi = new ComplexDoublePolar(Math.PI / 4d, 1d);
-                list = Complex.roots(new ComplexDoubleCartesian(-1d, 0d), 4);
+                negativeOne = new ComplexDoubleCartesian(-1d, 0d);
+                list = Complex.roots(negativeOne, 4);
                 for (Complex<Double> each : list) {
                     if (quarterPi.equals(each)) {
                         quarterPiCount += 1;
@@ -133,11 +135,19 @@ public class ComplexUnitTest {
             }
             @Test
             public void hasUniqueRoots() {
-                assertTrue(quarterPiCount == 1, "roots List contains unique roots");
+                assertEquals(1, quarterPiCount, "roots List contains pi/4 once");
             }
             @Test
             public void hasCorrectCount() {
-                assertTrue(list.size() == 4, "There should be 4 fourth roots");
+                assertEquals(4, list.size(), "There should be 4 fourth roots");
+            }
+            @Test
+            public void correctRoots() {
+                boolean badRoot = false;
+                for (Complex<Double> each : list) {
+                    assertEquals(negativeOne, each.pow(new ComplexDoubleCartesian(4d, 0d)),
+                            String.format("%s not a root of %s", each, negativeOne));
+                }
             }
         }
     }
