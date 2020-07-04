@@ -13,7 +13,7 @@ import java.util.List;
  */
 public abstract class Complex <T extends Number> {
     /** The allowed error for certain methods and algorithms */
-    private static double TARGET_PRECISION = 1E-16;
+    private static double TARGET_PRECISION = 1E-13;
     /** Returns the principal Argument of this. */
     public abstract T Argument ();
     /** Returns the modulus of this. */
@@ -97,10 +97,6 @@ public abstract class Complex <T extends Number> {
      * @return true if the same Object, or the comparison of Real-axis component to other, or false
      *             if there is an unmatched complex component, or a presumptive true
      */
-    //TODO: later, implement this such that Complex.equals() checks the magnitude of the difference
-    // of the difference A minus B is less than some threshold epsilon value.
-    // Will standardize all equality checking, and allow for conversion errors between polar
-    // and Cartesian.
     public boolean equals (Object other) {
         /* Never equal to null */
         if (other == null) return false;
@@ -126,9 +122,8 @@ public abstract class Complex <T extends Number> {
         }
         /* End external type checking */
         else {
-            /* From here rely on implementing classes to complete verification, so return
-             * a presumptive true */
-            return true;
+            Complex diff = this.subtract((Complex) other);
+            return diff.modulus().doubleValue() < TARGET_PRECISION;
         }
     }
 
@@ -259,9 +254,9 @@ public abstract class Complex <T extends Number> {
         if (0d == value.doubleValue()) return 0d;
         else if (1d == value.doubleValue()) return 1d;
 
-        Double decValue = 1d/degree;
+        double decValue = 1d/degree;
         int oneLess = degree - 1;
-        Double delta = 1d;
+        double delta = 1d;
         Double root = Math.exp(decValue*Math.log(value.doubleValue()));
         while (delta > TARGET_PRECISION) {
             Double next = decValue * ((oneLess * root) + (value.doubleValue()/Math.pow(root, oneLess)));

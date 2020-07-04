@@ -103,20 +103,20 @@ public class ComplexDoubleCartesian extends Complex<Double> {
         return toString();
     }
 
-    @Override
+/*    @Override
     public boolean equals(Object other) {
-        /* Use Complex parent class equality checks */
+        *//* Use Complex parent class equality checks *//*
         if (!super.equals(other)) return false;
         if (!(other instanceof Complex)) return true;
         @SuppressWarnings("unchecked")
         Complex<Number> o = (Complex<Number>) other;
-        /* Component-wise equality check */
+        *//* Component-wise equality check *//*
         Double tReal = this.real;
         Double tImaginary = this.imaginary;
         double oReal = o.real().doubleValue();
         double oImaginary = o.imaginary().doubleValue();
         return (tReal.equals(oReal)) && (tImaginary.equals(oImaginary));
-    }
+    }*/
 
     /**
      * Hashing algorithm for ComplexDoublePolar

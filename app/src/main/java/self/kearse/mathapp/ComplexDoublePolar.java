@@ -147,39 +147,40 @@ public class ComplexDoublePolar extends Complex<Double> {
         return String.format("%s\\,e^{%s\\,i}", this.modulus.toString(), this.argument.toString());
     }
 
-    /**
-     * Checks for equality with another Object.
-     * @param other the object to compare to
-     * @return true if other is an equivalent numerical value, false otherwise.
-     */
-    @Override
-    public boolean equals(Object other) {
-        /* Use Complex parent class equality checks */
-        if (!super.equals(other)) return false;
-        if (!(other instanceof Complex)) return true;
-        @SuppressWarnings("unchecked")
-        Complex<Number> o = (Complex<Number>) other;
-        /* Component-wise equality check */
-        Double tArgument = this.Argument();
-        Double tModulus = this.modulus();
-        double oArgument = o.Argument().doubleValue();
-        double oModulus = o.modulus().doubleValue();
-        if (tModulus.equals(0d) && (oModulus == 0d)) {
-            return true;
-        }
-        else if ( (tArgument.equals(oArgument)) && (tModulus.equals(oModulus)) ) {
-                return true;
-        } else {
-            /* Check for coaxial equality with mismatched modulus signs */
-            tModulus = -tModulus;
-            if (tModulus.equals(oModulus)) {
-                if (tArgument > 0d) tArgument -= Math.PI;
-                else tArgument += Math.PI;
-                return tArgument.equals(oArgument);
-            }
-            else return false;
-        }
-    }
+//    /**
+//     * Checks for equality with another Object.
+//     * @param other the object to compare to
+//     * @return true if other is an equivalent numerical value, false otherwise.
+//     */
+//    @Override
+//    public boolean equals(Object other) {
+//        /* Use Complex parent class equality checks */
+//        if (!super.equals(other)) return false;
+//        if (!(other instanceof Complex)) return true;
+//        @SuppressWarnings("unchecked")
+//        Complex<Number> o = (Complex<Number>) other;
+//
+//        /* Component-wise equality check */
+//        Double tArgument = this.Argument();
+//        Double tModulus = this.modulus();
+//        double oArgument = o.Argument().doubleValue();
+//        double oModulus = o.modulus().doubleValue();
+//        if (tModulus.equals(0d) && (oModulus == 0d)) {
+//            return true;
+//        }
+//        else if ( (tArgument.equals(oArgument)) && (tModulus.equals(oModulus)) ) {
+//                return true;
+//        } else {
+//            /* Check for coaxial equality with mismatched modulus signs */
+//            tModulus = -tModulus;
+//            if (tModulus.equals(oModulus)) {
+//                if (tArgument > 0d) tArgument -= Math.PI;
+//                else tArgument += Math.PI;
+//                return tArgument.equals(oArgument);
+//            }
+//            else return false;
+//        }
+//    }
 
     /**
      * Hashing algorithm for ComplexDoublePolar
@@ -200,7 +201,7 @@ public class ComplexDoublePolar extends Complex<Double> {
         if (argument == null) {
             throw new IllegalArgumentException("Cannot take the argument of null");
         }
-        Double arg = argument.doubleValue();
+        double arg = argument.doubleValue();
         if ( (arg > Math.PI) || (arg <= -Math.PI) ) {
             arg = arg % (2 * Math.PI);
             if (arg > Math.PI) {
