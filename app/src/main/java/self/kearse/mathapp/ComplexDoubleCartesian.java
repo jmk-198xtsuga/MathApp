@@ -3,6 +3,8 @@ package self.kearse.mathapp;
 import androidx.annotation.NonNull;
 
 public class ComplexDoubleCartesian extends Complex<Double> {
+    /** A prime integer for use in hashing a Complex number */
+    final static int HASH_PRIME = 71;
     private final Double real;
     private final Double imaginary;
 
@@ -114,5 +116,14 @@ public class ComplexDoubleCartesian extends Complex<Double> {
         double oReal = o.real().doubleValue();
         double oImaginary = o.imaginary().doubleValue();
         return (tReal.equals(oReal)) && (tImaginary.equals(oImaginary));
+    }
+
+    /**
+     * Hashing algorithm for ComplexDoublePolar
+     * @return an integer based on the real and imaginary components.
+     */
+    @Override
+    public int hashCode() {
+        return real.hashCode() * HASH_PRIME + imaginary.hashCode();
     }
 }

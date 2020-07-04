@@ -3,6 +3,8 @@ package self.kearse.mathapp;
 import androidx.annotation.NonNull;
 
 public class ComplexDoublePolar extends Complex<Double> {
+    /** A prime integer for use in hashing a Complex number */
+    final static int HASH_PRIME = 23;
     /** The argument, theta, of the polar representation <i>z=r*e^{i*theta)</i> */
     private Double argument;
     /** The modulus, r, of the polar representation <i>z=r*e^{i*theta)</i> */
@@ -177,6 +179,15 @@ public class ComplexDoublePolar extends Complex<Double> {
             }
             else return false;
         }
+    }
+
+    /**
+     * Hashing algorithm for ComplexDoublePolar
+     * @return an integer based on the principal argument and modulus.
+     */
+    @Override
+    public int hashCode() {
+        return Argument().hashCode() * HASH_PRIME + modulus.hashCode();
     }
 
     /**

@@ -97,6 +97,10 @@ public abstract class Complex <T extends Number> {
      * @return true if the same Object, or the comparison of Real-axis component to other, or false
      *             if there is an unmatched complex component, or a presumptive true
      */
+    //TODO: later, implement this such that Complex.equals() checks the magnitude of the difference
+    // of the difference A minus B is less than some threshold epsilon value.
+    // Will standardize all equality checking, and allow for conversion errors between polar
+    // and Cartesian.
     public boolean equals (Object other) {
         /* Never equal to null */
         if (other == null) return false;
@@ -127,6 +131,13 @@ public abstract class Complex <T extends Number> {
             return true;
         }
     }
+
+    /**
+     * Read (and agree) that it is good practice to overload hashCode() and equals() together.
+     * @return a hash code value for the Complex number.
+     */
+    @Override
+    public abstract int hashCode();
 
     /**
      * Raises this to the given exponent.
@@ -185,7 +196,7 @@ public abstract class Complex <T extends Number> {
             Argument = (Math.PI / degree) * 2d;
         } else {
             Argument = Argument / degree;
-        };
+        }
         return new ComplexDoublePolar(Argument, modulus);
     }
 
@@ -235,10 +246,14 @@ public abstract class Complex <T extends Number> {
      * @param degree the degree of the root
      * @return the real value such that raising it to degree yields value (within approximation)
      * @throws NullPointerException if value is null
+     * @throws IllegalArgumentException if value is negative
      */
-    private static Double rootNewton (Number value, int degree) throws NullPointerException {
+    private static Double rootNewton (Number value, int degree)
+            throws NullPointerException, IllegalArgumentException {
         if (value == null) {
             throw new NullPointerException("Cannot take the root of null");
+        } else if (value.doubleValue() < 0) {
+            throw new IllegalArgumentException("Value should be a positive real number");
         }
         /* Short-circuit for roots of zero and one*/
         if (0d == value.doubleValue()) return 0d;
@@ -255,7 +270,7 @@ public abstract class Complex <T extends Number> {
         }
         /* Coerce root to integer when appropriate */
         int intValue = root.intValue();
-        if (Math.pow(intValue, degree) == value.doubleValue()) root = new Double(intValue);
+        if (Math.pow(intValue, degree) == value.doubleValue()) root = Double.valueOf(intValue);
         /* End integer coercion */
         return root;
     }
