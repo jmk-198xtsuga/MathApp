@@ -44,6 +44,8 @@ public class ComplexUnitTest {
         assertEquals(0d, new Double(0));
         assertEquals( new Double(0d), 0);
         assertEquals( 0d, (Number) new Double(0));
+        assertNotEquals(new ComplexDoubleCartesian(0d, 2.5d),
+                new ComplexDoubleCartesian(0d, 2.4d));
     }
 
     @Nested

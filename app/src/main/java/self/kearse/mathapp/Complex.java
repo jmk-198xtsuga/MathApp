@@ -42,6 +42,10 @@ public abstract class Complex <T extends Number> {
      */
     public abstract Complex<T> complement ();
 
+    //TODO: Explore static methods for mathematical operations.
+    // Currently the mathematical operations are controlled via object-oriented methods,
+    // which is functional yet there might be a better sytnax implementation of these.
+
     /**
      * Adds the value of another Complex number to this.
      * @param other another Complex number
@@ -91,8 +95,8 @@ public abstract class Complex <T extends Number> {
 
     /**
      * Checks for equality with another Object.  Compares types and values up to a specific
-     * implementation of complex numbers, so any implementation should provide the final
-     * check of component-wise value equality.
+     * implementation of complex numbers, currently based on whether the distance between them
+     * is less than a threshold value (TARGET_PRECISION).
      * @param other the object to compare to
      * @return true if the same Object, or the comparison of Real-axis component to other, or false
      *             if there is an unmatched complex component, or a presumptive true
@@ -121,6 +125,8 @@ public abstract class Complex <T extends Number> {
             }
         }
         /* End external type checking */
+        //TODO: I think rearranging else-if sequence would nix raw class warning, or careful
+        // generic workings...
         else {
             Complex diff = this.subtract((Complex) other);
             return diff.modulus().doubleValue() < TARGET_PRECISION;
@@ -184,7 +190,6 @@ public abstract class Complex <T extends Number> {
      */
     public static Complex<Double> root (Complex<? extends Number> value, int degree)
             throws NullPointerException, IllegalArgumentException {
-        //TODO: method body
         Double modulus = rootNewton(value.modulus(), degree);
         Double Argument = value.Argument().doubleValue();
         if (Argument.equals(0d)) {
@@ -205,7 +210,6 @@ public abstract class Complex <T extends Number> {
      */
     public static List<Complex<Double>> roots (Complex<? extends Number> value, int degree)
         throws NullPointerException, IllegalArgumentException {
-        //TODO: method body
         List<Complex<Double>> list = new ArrayList<Complex<Double>>();
         Complex<Double> principal = root(value, degree);
         Double modulus = principal.modulus();
