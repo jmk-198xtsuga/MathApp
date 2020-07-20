@@ -66,9 +66,10 @@ public class ComplexDoubleCartesian extends Complex<Double> {
             throw new ArithmeticException("No multiplicative inverse of zero");
         } else {
             Complex<Double> complement = this.complement();
-            Double modulus = this.modulus();
-            return new ComplexDoubleCartesian(complement.real() / modulus,
-                    complement.imaginary() / modulus);
+            Double modulusSquare = this.modulus();
+            modulusSquare = modulusSquare * modulusSquare;
+            return new ComplexDoubleCartesian(complement.real() / modulusSquare,
+                    complement.imaginary() / modulusSquare );
         }
     }
 
