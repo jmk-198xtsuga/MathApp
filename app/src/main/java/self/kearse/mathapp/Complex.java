@@ -113,7 +113,7 @@ public abstract class Complex <T extends Number> {
                  * and comparable to other Number types */
                 if (this.Argument().equals(0d)) {
                     return this.modulus().doubleValue() == ((Number) other).doubleValue();
-                } else if (this.imaginary().doubleValue() == 0d) {
+                } else if (this.imaginary().doubleValue() < TARGET_PRECISION) {
                     /* We are negatively oriented on the Real axis,
                      * and comparable to other Number types */
                     return this.addInverse().modulus().doubleValue() == ((Number) other).doubleValue();

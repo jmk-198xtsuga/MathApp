@@ -4,9 +4,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-
+import java.util.LinkedList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -37,15 +36,102 @@ public class ComplexUnitTest {
             fortytwoCartesian = new ComplexDoubleCartesian( 42d, 0d );
             negativeiCartesian = new ComplexDoubleCartesian( 0d, -1d );
         }
+        //TODO: This needs to be rebuilt, these samples should be universally available and
+        // there is no need to test constructors in the abstract class
     }
 
-    @Test
-    public void comparisonTest() {
-        assertEquals(0d, new Double(0));
-        assertEquals( new Double(0d), 0);
-        assertEquals( 0d, (Number) new Double(0));
-        assertNotEquals(new ComplexDoubleCartesian(0d, 2.5d),
-                new ComplexDoubleCartesian(0d, 2.4d));
+    @Nested
+    public class comparisonTest {
+        @Test
+        public void equalLesserType() {
+            ComplexDoublePolar negativeThree = new ComplexDoublePolar(Math.PI, 3d);
+            assert((new ComplexDoubleCartesian(2d, 0d)).equals(2d));
+            assertTrue(negativeThree.equals(-3d),
+                String.format("Expected %s to equal -3", negativeThree.toString()));
+        }
+        @Test
+        public void notEqualCloseValues() {
+            assertNotEquals(new ComplexDoubleCartesian(0d, 2.5d),
+                    new ComplexDoubleCartesian(0d, 2.4d));
+        }
+        @Test
+        public void notEqualLesserTypeDistinctValues() {
+            assertFalse(new ComplexDoubleCartesian(2d, 0d).equals(4d));
+        }
+        @Test
+        public void notEqualIncomparibleTypes() {
+            assertFalse(new ComplexDoubleCartesian(2d, 0d).equals(
+                    new LinkedList<Integer>()) );
+        }
+        @Test
+        public void notEqualToLesserWhenNotReal() {
+            ComplexDoubleCartesian notReal = new ComplexDoubleCartesian(3d, 4d);
+            assertFalse(notReal.equals(3d), "Equality not based on real value alone");
+            assertFalse(notReal.equals(4d), "Equality not based on imaginary value alone");
+            assertFalse(notReal.equals(5d), "Equality not based on magnitude alone");
+        }
+    }
+
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @Nested
+    public class ArithmeticTests {
+        Complex i, one, mix, zero;
+        @BeforeAll
+        public void sampleConstructions() {
+            i = new ComplexDoubleCartesian(0d, 1d);
+            one = new ComplexDoubleCartesian(1d, 0d);
+            mix = new ComplexDoubleCartesian(1d, 1d);
+            zero = new ComplexDoubleCartesian(0d, 0d);
+        }
+        @Nested
+        public class SubtractTests {
+            @Test
+            public void subtractSelfReturnsZero() {
+                assertEquals(zero, i.subtract(i),
+                        String.format("%s - %s = %s", i, i, zero));
+                assertEquals(zero, one.subtract(one),
+                        String.format("%s - %s = %s", one, one, zero));
+                assertEquals(zero, mix.subtract(mix),
+                        String.format("%s - %s = %s", mix, mix, zero));
+            }
+            @Test
+            public void subtractingComponents() {
+                assertEquals(i, mix.subtract(one));
+                assertEquals(one, mix.subtract(i));
+                assertEquals(new ComplexDoubleCartesian(-1d, 0d),
+                        i.subtract(mix));
+            }
+        }
+        @Nested
+        public class DivisionTests {
+            @Test
+            public void divideBySelfReturnsOne() {
+                assertEquals(one, i.divide(i),
+                        String.format("%s / %s = %s", i, i, one));
+                assertEquals(one, one.divide(one),
+                        String.format("%s / %s = %s", one, one, one));
+                assertEquals(one, mix.divide(mix),
+                        String.format("%s / %s = %s", mix, mix, one));
+            }
+            @Test
+            public void divideByZeroIsIllegal() {
+                try {
+                    mix.divide(new ComplexDoublePolar(2d, 0d));
+                    fail();
+                } catch (ArithmeticException e) {
+                    assertTrue(e.getMessage().length() > 0);
+                }
+            }
+            @Test
+            public void nullNotAllowed() {
+                try {
+                    mix.divide(null);
+                    fail();
+                } catch (NullPointerException e) {
+                    assertTrue(e.getMessage().length() > 0);
+                }
+            }
+        }
     }
 
     @Nested
