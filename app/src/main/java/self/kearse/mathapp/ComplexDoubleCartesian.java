@@ -40,9 +40,19 @@ public class ComplexDoubleCartesian extends Complex<Double> {
         return Argument;
     }
 
+    /**
+     * Utilized the modulus squared in the multiplicative inverse method, so it is appropriate
+     * to have this intermediate step available and avoid having to compute a square root and
+     * an extra square.
+     * @return the square of the modulus of the Complex number
+     */
+    private Double modulusSquared() {
+        return this.real * this.real + this.imaginary * this.imaginary;
+    }
+
     @Override
     public Double modulus() {
-        return Math.sqrt( (this.real * this.real) + (this.imaginary * this.imaginary) );
+        return Math.sqrt(modulusSquared());
     }
 
     @Override
@@ -66,8 +76,7 @@ public class ComplexDoubleCartesian extends Complex<Double> {
             throw new ArithmeticException("No multiplicative inverse of zero");
         } else {
             Complex<Double> complement = this.complement();
-            Double modulusSquare = this.modulus();
-            modulusSquare = modulusSquare * modulusSquare;
+            Double modulusSquare = this.modulusSquared();
             return new ComplexDoubleCartesian(complement.real() / modulusSquare,
                     complement.imaginary() / modulusSquare );
         }
