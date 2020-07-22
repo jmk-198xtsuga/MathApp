@@ -17,35 +17,27 @@ public class ComplexUnitTest {
 
     /** The allowed tolerance for computational error (when checking equality). */
     private static double TOLERANCE = 1E-13;
+    static Complex<Double> onePolar, oneCartesian;
+    static Complex<Double> fortytwoPolar, fortytwoCartesian;
+    static Complex<Double> negativeiPolar, negativeiCartesian;
+    static Complex<Double> negativeThree;
 
-    /**
-     * Tests for the constructor methods.
-     */
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    public class constructorTests {
-        Complex<Double> onePolar, oneCartesian;
-        Complex<Double> fortytwoPolar, fortytwoCartesian;
-        Complex<Double> negativeiPolar, negativeiCartesian;
-        @BeforeAll
-        public void sampleConstructions() {
-            onePolar = new ComplexDoublePolar(0d, 1d );
-            fortytwoPolar = new ComplexDoublePolar( 0d, 42d );
-            negativeiPolar = new ComplexDoublePolar( -(Math.PI/2), 1d );
-            oneCartesian = new ComplexDoubleCartesian( 1d, 0d );
-            fortytwoCartesian = new ComplexDoubleCartesian( 42d, 0d );
-            negativeiCartesian = new ComplexDoubleCartesian( 0d, -1d );
-        }
-        //TODO: This needs to be rebuilt, these samples should be universally available and
-        // there is no need to test constructors in the abstract class
+    @BeforeAll
+    public static void sampleConstructions() {
+        onePolar = new ComplexDoublePolar(0d, 1d );
+        fortytwoPolar = new ComplexDoublePolar( 0d, 42d );
+        negativeiPolar = new ComplexDoublePolar( -(Math.PI/2), 1d );
+        oneCartesian = new ComplexDoubleCartesian( 1d, 0d );
+        fortytwoCartesian = new ComplexDoubleCartesian( 42d, 0d );
+        negativeiCartesian = new ComplexDoubleCartesian( 0d, -1d );
+        negativeThree = new ComplexDoublePolar(Math.PI, 3d);
     }
 
     @Nested
     public class comparisonTest {
         @Test
         public void equalLesserType() {
-            ComplexDoublePolar negativeThree = new ComplexDoublePolar(Math.PI, 3d);
-            assert((new ComplexDoubleCartesian(2d, 0d)).equals(2d));
+            assert(fortytwoCartesian.equals(42d));
             assertTrue(negativeThree.equals(-3d),
                 String.format("Expected %s to equal -3", negativeThree.toString()));
         }
@@ -56,11 +48,11 @@ public class ComplexUnitTest {
         }
         @Test
         public void notEqualLesserTypeDistinctValues() {
-            assertFalse(new ComplexDoubleCartesian(2d, 0d).equals(4d));
+            assertFalse(fortytwoCartesian.equals(4d));
         }
         @Test
         public void notEqualIncomparibleTypes() {
-            assertFalse(new ComplexDoubleCartesian(2d, 0d).equals(
+            assertFalse(fortytwoCartesian.equals(
                     new LinkedList<Integer>()) );
         }
         @Test
@@ -75,7 +67,7 @@ public class ComplexUnitTest {
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     @Nested
     public class ArithmeticTests {
-        Complex i, one, mix, zero;
+        Complex<Double> i, one, mix, zero;
         @BeforeAll
         public void sampleConstructions() {
             i = new ComplexDoubleCartesian(0d, 1d);
@@ -100,6 +92,15 @@ public class ComplexUnitTest {
                 assertEquals(one, mix.subtract(i));
                 assertEquals(new ComplexDoubleCartesian(-1d, 0d),
                         i.subtract(mix));
+            }
+            @Test
+            public void nullNotAllowed() {
+                try {
+                    mix.divide(null);
+                    fail();
+                } catch (NullPointerException e) {
+                    assertTrue(e.getMessage().length() > 0);
+                }
             }
         }
         @Nested

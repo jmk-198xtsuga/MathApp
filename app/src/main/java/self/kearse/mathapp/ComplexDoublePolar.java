@@ -1,5 +1,11 @@
 package self.kearse.mathapp;
 
+import android.graphics.Typeface;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.style.StyleSpan;
+import android.text.style.SuperscriptSpan;
 import androidx.annotation.NonNull;
 
 public class ComplexDoublePolar extends Complex<Double> {
@@ -145,6 +151,23 @@ public class ComplexDoublePolar extends Complex<Double> {
     @Override
     public String toLaTeX() {
         return String.format("%s\\,e^{%s\\,i}", this.modulus.toString(), this.argument.toString());
+    }
+
+    @Override
+    public SpannedString toSpannedString() {
+        int superscriptIndex, italicIndex;
+        SpannableStringBuilder result = new SpannableStringBuilder();
+        result.append(this.modulus.toString());
+        result.append("e");
+        superscriptIndex = result.length();
+        result.append(this.argument.toString());
+        italicIndex = result.length();
+        result.append("i");
+        result.setSpan(new StyleSpan(Typeface.ITALIC), italicIndex, result.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        result.setSpan(new SuperscriptSpan(), superscriptIndex, result.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return new SpannedString(result);
     }
 
 //    /**

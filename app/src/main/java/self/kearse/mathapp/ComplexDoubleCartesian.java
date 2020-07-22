@@ -1,5 +1,10 @@
 package self.kearse.mathapp;
 
+import android.graphics.Typeface;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.style.StyleSpan;
 import androidx.annotation.NonNull;
 
 public class ComplexDoubleCartesian extends Complex<Double> {
@@ -111,6 +116,20 @@ public class ComplexDoubleCartesian extends Complex<Double> {
     @Override
     public String toLaTeX() {
         return toString();
+    }
+
+    @Override
+    public SpannedString toSpannedString() {
+        int italicIndex;
+        SpannableStringBuilder result = new SpannableStringBuilder();
+        result.append(this.real().toString());
+        result.append("+");
+        result.append(this.imaginary().toString());
+        italicIndex = result.length();
+        result.append("i");
+        result.setSpan(new StyleSpan(Typeface.ITALIC), italicIndex, result.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return new SpannedString(result);
     }
 
 /*    @Override

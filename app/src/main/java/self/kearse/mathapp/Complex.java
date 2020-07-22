@@ -1,7 +1,7 @@
 package self.kearse.mathapp;
 
+import android.text.SpannedString;
 import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -233,9 +233,15 @@ public abstract class Complex <T extends Number> {
 
     /**
      * Formats the Complex number in LaTeX-style math code
-     * @return a string with the LaTeX-style math code for the Complex Number, without delimiters
+     * @return a string with the LaTeX-style math code for the Complex number, without delimiters
      */
     public abstract String toLaTeX();
+
+    /**
+     * Formats the Complex number in a SpannableString (for Android TextView use)
+     * @return a SpannableString for the Complex number
+     */
+    public abstract SpannedString toSpannedString();
 
     /**
      * Computes the n-th root of a Real number.  Utilizes a exponent/logarithm computation to seed
