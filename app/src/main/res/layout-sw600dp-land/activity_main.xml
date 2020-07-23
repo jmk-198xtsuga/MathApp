@@ -19,13 +19,13 @@
 
     <fragment
         android:id="@+id/fragment"
-        android:name="self.kearse.mathapp.IntroductionFragment"
+        android:name="self.kearse.mathapp.NumericalRepresentationFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/activityMenu"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_introduction" />
+        tools:layout="@layout/fragment_numerical_representation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

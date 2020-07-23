@@ -17,4 +17,13 @@
         engineering, including electronics, physics, mechanical engineering, population modelling,
         and so forth.
     </string>
+    <string name="numerical_representation_header">Numerical Representation</string>
+    <string name="numerical_representation_body">
+        There are two primary ways to represent a complex number.  The first, more intuitively,
+        is a real component plus an imaginary component multiplied by i.  Alternatively, complex
+        numbers can be represented in polar coordinates, with a scalar modulus times an argument
+        (radian angle) relative to the real axis.
+    </string>
+    <string name="cartesian_representation">Cartesian Representation</string>
+    <string name="polar_representation">Polar Representation</string>
 </resources>

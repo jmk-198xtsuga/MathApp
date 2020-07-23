@@ -3,6 +3,7 @@ package self.kearse.mathapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                             fragment = new IntroductionFragment();
                             break;
                         case 1:
-                            //fragment = new NumericalRepresentationFragment();
+                            fragment = new NumericalRepresentationFragment();
                             break;
                         case 2:
                             //fragment = new ComplexPlaneFragment();
@@ -113,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
                     if (fragment != null) {
-
+                        FragmentTransaction transaction;
+                        //TODO: Get this to crank out a new fragment
                     }
                 }
             }
