@@ -102,6 +102,7 @@ public abstract class Complex <T extends Number> {
      *             if there is an unmatched complex component, or a presumptive true
      */
     public boolean equals (Object other) {
+        // TODO: Rename this and re-impement equals with strict equality for Java specs
         /* Never equal to null */
         if (other == null) return false;
         /* Reflexive equality check */
