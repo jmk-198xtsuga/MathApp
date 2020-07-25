@@ -9,20 +9,23 @@
     </string-array>
 
     <string name="introduction_header">Introduction</string>
-    <string name="introduction_body">
-        This isn\'t just a clever workaround, this actually leads to a mathematically correct
-        framework where we can define numbers, operations, relationships, and all of the familiar
-        mathematics, and methodically, repeatably arrive at the correct solutions to a diverse range
-        of problems.  These solutions are even an essential "elementary" piece of most modern
-        engineering, including electronics, physics, mechanical engineering, population modelling,
-        and so forth.
+    <string name="introduction_body">What separates complex numbers from familiar numbers (the
+        integers, the reals, etc.) is the declaration of a specific value <i>i</i> to represent the
+        square root of negative one.\n\nWhen we use this <i>i</i> term, now we can factor <i>i</i> out
+        of several questions that previously were "undefined", then continue evaluating them with
+        familiar methods.\n\nThis isn\'t just a clever workaround, this actually leads to a
+        mathematically correct framework where we can define numbers, operations, relationships, and
+        all of the familiar mathematics, and methodically, repeatably arrive at the correct
+        solutions to a diverse range of problems.  These solutions are even an essential
+        "elementary" piece of most modern engineering, including electronics, physics, mechanical
+        engineering, population modelling, and so forth.
     </string>
     <string name="numerical_representation_header">Numerical Representation</string>
-    <string name="numerical_representation_body">
-        There are two primary ways to represent a complex number.  The first, more intuitively,
-        is a real component plus an imaginary component multiplied by i.  Alternatively, complex
-        numbers can be represented in polar coordinates, with a scalar modulus times an argument
-        (radian angle) relative to the real axis.
+    <string name="numerical_representation_body">There are two primary ways to represent a complex
+        number.  The first, more intuitively, is a real component plus an imaginary component
+        multiplied by <i>i</i>.  Alternatively, complex numbers can be represented in polar
+        coordinates, with a scalar modulus times an argument (radian angle) relative to the real
+        axis.
     </string>
     <string name="cartesian_representation">Cartesian Representation</string>
     <string name="polar_representation">Polar Representation</string>
