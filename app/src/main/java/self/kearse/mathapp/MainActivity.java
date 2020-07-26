@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,28 +45,34 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
     }
 
     public void onSelectTopic(int topicPosition) {
-        Fragment fragment = null;
-        switch (topicPosition) {
-            case 0:
-                fragment = new IntroductionFragment();
-                break;
-            case 1:
-                fragment = new NumericalRepresentationFragment();
-                break;
-            case 2:
-                //fragment = new ComplexPlaneFragment();
-                break;
-            case 3:
-                //fragment = new BasicOperationsFragment();
-                break;
-            default:
-                break;
-        }
-        if (fragment != null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        if (findViewById(R.id.fragment_container) != null) {
+            Fragment fragment = null;
+            switch (topicPosition) {
+                case 0:
+                    fragment = new IntroductionFragment();
+                    break;
+                case 1:
+                    fragment = new NumericalRepresentationFragment();
+                    break;
+                case 2:
+                    //fragment = new ComplexPlaneFragment();
+                    break;
+                case 3:
+                    //fragment = new BasicOperationsFragment();
+                    break;
+                default:
+                    break;
+            }
+            if (fragment != null) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        } else {
+            Intent intent = new Intent(this, TopicFragment.TopicFragmentActivity.class);
+            intent.putExtra(TopicFragment.TOPIC_ID, topicPosition);
+            startActivity(intent);
             //TODO: Get this to crank out a new fragment
         }
     }
@@ -136,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
  * RecyclerView.ViewHolder
  */
 interface OnSelectTopicListener {
+    //TODO: Intending to better design the interaction between MainActivity and TopicFragment
+
     /* Referencing https://developer.android.com/guide/components/fragments
      * and https://android.jlelse.eu/click-listener-for-recyclerview-adapter-2d17a6f6f6c9 */
 
