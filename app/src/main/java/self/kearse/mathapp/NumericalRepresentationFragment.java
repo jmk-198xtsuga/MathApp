@@ -14,7 +14,7 @@ import android.widget.TextView;
  * Use the {@link NumericalRepresentationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NumericalRepresentationFragment extends Fragment {
+public class NumericalRepresentationFragment extends TopicFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,6 +47,18 @@ public class NumericalRepresentationFragment extends Fragment {
         return fragment;
     }
 
+    public static NumericalRepresentationFragment newInstance(Bundle bundle)
+        throws IllegalArgumentException {
+        if (bundle == null) throw new IllegalArgumentException("null savedInstanceState");
+        else if (bundle.getString(ARG_PARAM1) == null || bundle.getString(ARG_PARAM2) == null)
+            throw new IllegalArgumentException("savedInstanceState missing expected tokens");
+        else {
+            NumericalRepresentationFragment fragment = new NumericalRepresentationFragment();
+            fragment.setArguments(bundle);
+            return fragment;
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +66,7 @@ public class NumericalRepresentationFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        updateState(savedInstanceState);
     }
 
     @Override
@@ -68,5 +81,11 @@ public class NumericalRepresentationFragment extends Fragment {
         textCartesian.setText(mixCartesian.toSpannedString(), TextView.BufferType.SPANNABLE);
         textPolar.setText(mixPolar.toSpannedString(), TextView.BufferType.SPANNABLE);
         return view;
+    }
+
+    @Override
+    public void updateState(Bundle SavedInstanceState) {
+        // do nothing for now
+        return;
     }
 }

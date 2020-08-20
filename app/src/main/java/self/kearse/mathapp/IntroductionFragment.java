@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
@@ -14,11 +15,12 @@ import android.view.ViewGroup;
  * Use the {@link IntroductionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class IntroductionFragment extends Fragment {
+public class IntroductionFragment extends TopicFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String SCROLL_POS_KEY = "scrollPos";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -53,6 +55,7 @@ public class IntroductionFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        updateState(savedInstanceState);
     }
 
     @Override
@@ -60,5 +63,14 @@ public class IntroductionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_introduction, container, false);
+    }
+
+    @Override
+    public void updateState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            int scrollPosition = savedInstanceState.getInt(SCROLL_POS_KEY);
+            TextView introductionBody = getView().findViewById(R.id.introductionBody);
+            introductionBody.setScrollY(scrollPosition);
+        }
     }
 }

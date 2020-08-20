@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnSelectTopicListener {
     private RecyclerView activityList;
@@ -25,63 +28,52 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
         setContentView(R.layout.activity_main);
         /* Reference: https://developer.android.com/training/basics/fragments/fragment-ui */
         if (findViewById(R.id.fragment_container) != null) {
-            if (savedInstanceState != null) {
-                return;
-            } else {
-                Fragment initial = new IntroductionFragment();
-                initial.setArguments(getIntent().getExtras());
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.fragment_container, initial);
-                transaction.commit();
-            }
+            Fragment initial = new IntroductionFragment();
+            initial.setArguments(getIntent().getExtras());
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.fragment_container, initial);
+            transaction.commit();
         }
         this.activityList = findViewById(R.id.activityMenu);
         this.activityList.setHasFixedSize(true);
         this.layoutManager = new LinearLayoutManager(this);
         this.activityList.setLayoutManager(this.layoutManager);
         this.activityAdapter = new ActivityListAdapter(
-                getResources().getStringArray(R.array.activities_list), this);
+                Topic.getTopicList(), this);
         this.activityList.setAdapter(this.activityAdapter);
     }
 
     public void onSelectTopic(int topicPosition) {
         if (findViewById(R.id.fragment_container) != null) {
-            Fragment fragment = null;
-            switch (topicPosition) {
-                case 0:
-                    fragment = new IntroductionFragment();
-                    break;
-                case 1:
-                    fragment = new NumericalRepresentationFragment();
-                    break;
-                case 2:
-                    //fragment = new ComplexPlaneFragment();
-                    break;
-                case 3:
-                    //fragment = new BasicOperationsFragment();
-                    break;
-                default:
-                    break;
+            Topic<? extends TopicFragment> topic = Topic.getTopicList().get(topicPosition);
+            TopicFragment fragment = null;
+            Bundle topicState = topic.getSavedInstanceState();
+            try {
+                fragment = topic.getFragmentClass().newInstance();
+            } catch (Exception e) {
+                Log.e("TopicFragment", "unable to instantiate topic fragment: " +
+                        e.getMessage());
             }
             if (fragment != null) {
+                if (topicState != null) fragment.updateState(topicState);
+                fragment.setArguments(getIntent().getExtras());
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, fragment);
-                transaction.addToBackStack(null);
                 transaction.commit();
             }
         } else {
             Intent intent = new Intent(this, TopicFragment.TopicFragmentActivity.class);
             intent.putExtra(TopicFragment.TOPIC_ID, topicPosition);
             startActivity(intent);
-            //TODO: Get this to crank out a new fragment
         }
     }
 
     public static class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapter.ViewHolder> {
-        private String[] activities;
+        private List<Topic<? extends TopicFragment>> activities;
         private OnSelectTopicListener onSelectTopicListener;
 
-        public ActivityListAdapter(String[] activityList, OnSelectTopicListener listener) {
+        public ActivityListAdapter(List<Topic<? extends TopicFragment>> activityList,
+                                   OnSelectTopicListener listener) {
             this.activities = activityList;
             this.onSelectTopicListener = listener;
         }
@@ -98,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
 
         @Override
         public void onBindViewHolder(ActivityListAdapter.ViewHolder holder, int position) {
-            holder.textView.setText(activities[position]);
+            holder.textView.setText(activities.get(position).getName());
         }
 
 //        @Override
@@ -114,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
 
         @Override
         public int getItemCount() {
-            return activities.length;
+            return activities.size();
         }
 
         /* Referencing https://github.com/android/views-widgets-samples/blob/master/RecyclerView/Application/src/main/java/com/example/android/recyclerview/CustomAdapter.java
