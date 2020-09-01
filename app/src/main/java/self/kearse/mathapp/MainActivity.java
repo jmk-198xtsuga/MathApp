@@ -19,7 +19,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnSelectTopicListener {
     private RecyclerView activityList;
-    private RecyclerView.Adapter activityAdapter;
+    private RecyclerView.Adapter<MainActivity.ActivityListAdapter.ViewHolder> activityAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     @Override
@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
                         e.getMessage());
             }
             if (fragment != null) {
-                if (topicState != null) fragment.updateState(topicState);
                 fragment.setArguments(getIntent().getExtras());
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, fragment);

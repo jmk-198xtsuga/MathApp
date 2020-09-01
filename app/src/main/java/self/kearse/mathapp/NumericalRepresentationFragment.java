@@ -66,7 +66,6 @@ public class NumericalRepresentationFragment extends TopicFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        updateState(savedInstanceState);
     }
 
     @Override
@@ -81,11 +80,5 @@ public class NumericalRepresentationFragment extends TopicFragment {
         textCartesian.setText(mixCartesian.toSpannedString(), TextView.BufferType.SPANNABLE);
         textPolar.setText(mixPolar.toSpannedString(), TextView.BufferType.SPANNABLE);
         return view;
-    }
-
-    @Override
-    public void updateState(Bundle SavedInstanceState) {
-        // do nothing for now
-        return;
     }
 }

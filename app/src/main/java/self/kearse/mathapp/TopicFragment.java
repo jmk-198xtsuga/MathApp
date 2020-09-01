@@ -33,7 +33,6 @@ public abstract class TopicFragment extends Fragment {
                 }
             }
             if (fragment != null) {
-                if (topicState != null) fragment.updateState(topicState);
                 fragment.setArguments(getIntent().getExtras());
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.add(R.id.fragment_container, fragment);
@@ -41,6 +40,4 @@ public abstract class TopicFragment extends Fragment {
             }
         }
     }
-
-    public abstract void updateState(Bundle topicState);
 }

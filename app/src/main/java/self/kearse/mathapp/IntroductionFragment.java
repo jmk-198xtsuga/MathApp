@@ -55,7 +55,6 @@ public class IntroductionFragment extends TopicFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        updateState(savedInstanceState);
     }
 
     @Override
@@ -63,14 +62,5 @@ public class IntroductionFragment extends TopicFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_introduction, container, false);
-    }
-
-    @Override
-    public void updateState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            int scrollPosition = savedInstanceState.getInt(SCROLL_POS_KEY);
-            TextView introductionBody = getView().findViewById(R.id.introductionBody);
-            introductionBody.setScrollY(scrollPosition);
-        }
     }
 }
