@@ -11,7 +11,7 @@ import java.util.List;
  * current topics for the app.
  * @param <F> A Fragment class for displaying the topic in an Android UI
  */
-public class Topic<F extends TopicFragment> {
+public class Topic<F extends TopicFragment> implements OnSaveInstanceStateListener {
     @NonNull private String name;
     @NonNull private Class<F> fragmentClass;
     private Bundle savedInstanceState;
@@ -60,8 +60,13 @@ public class Topic<F extends TopicFragment> {
         return this.fragmentClass;
     }
 
-    void setSavedInstanceState(Bundle savedInstanceState) {
+    protected void setSavedInstanceState(Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        setSavedInstanceState(savedInstanceState);
     }
 
     Bundle getSavedInstanceState() {
@@ -93,4 +98,8 @@ public class Topic<F extends TopicFragment> {
     //TODO: Figure out a way to correctly handle fragment class instances.  Would not want to have
     // each of the classes persist the entire life of the application (defeats the Android lifecycle
     // design), but still retain the savedInstanceState.
+}
+
+interface OnSaveInstanceStateListener {
+    void onSaveInstanceState(Bundle savedInstanceState);
 }
