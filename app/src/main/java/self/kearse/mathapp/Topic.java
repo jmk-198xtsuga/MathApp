@@ -98,6 +98,10 @@ public class Topic<F extends TopicFragment> implements OnSaveInstanceStateListen
     //TODO: Figure out a way to correctly handle fragment class instances.  Would not want to have
     // each of the classes persist the entire life of the application (defeats the Android lifecycle
     // design), but still retain the savedInstanceState.
+    //TODO: after online research, apparently using this singleton system for persistence is not
+    // the preferred approach. Look into some more durable persistent storage system
+    // (i.e. database)
+    // For a good read: https://developer.android.com/reference/android/app/Activity#onSaveInstanceState(android.os.Bundle)
 }
 
 interface OnSaveInstanceStateListener {
