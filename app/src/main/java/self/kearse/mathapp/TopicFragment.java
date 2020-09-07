@@ -20,10 +20,8 @@ public abstract class TopicFragment extends Fragment {
             Bundle extras = getIntent().getExtras();
             Topic<? extends TopicFragment> topic;
             TopicFragment fragment = null;
-            Bundle topicState = null;
             if (extras != null) {
                 topic = Topic.getTopicList().get(extras.getInt(TOPIC_ID));
-                topicState = topic.getSavedInstanceState();
                 try {
                     fragment = topic.getFragmentClass().newInstance();
                 } catch (Exception e) {

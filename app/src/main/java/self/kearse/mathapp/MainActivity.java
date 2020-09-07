@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
         if (findViewById(R.id.fragment_container) != null) {
             Topic<? extends TopicFragment> topic = Topic.getTopicList().get(topicPosition);
             TopicFragment fragment = null;
-            Bundle topicState = topic.getSavedInstanceState();
             try {
                 fragment = topic.getFragmentClass().newInstance();
             } catch (Exception e) {

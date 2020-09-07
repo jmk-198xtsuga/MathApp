@@ -11,23 +11,10 @@ import java.util.List;
  * current topics for the app.
  * @param <F> A Fragment class for displaying the topic in an Android UI
  */
-public class Topic<F extends TopicFragment> implements OnSaveInstanceStateListener {
+public class Topic<F extends TopicFragment> {
     @NonNull private String name;
     @NonNull private Class<F> fragmentClass;
-    private Bundle savedInstanceState;
     private static List<Topic<? extends TopicFragment>> allTopics;
-
-    /**
-     * Establishes a new Topic with a given name, Fragment class, and saved state
-     * @param name The name of the topic, as it will appear in a user-facing list
-     * @param fragmentClass The Fragment used to display the topic
-     * @param savedInstanceState The necessary information to reproduce the fragment if it closes
-     */
-    private Topic(@NonNull String name, @NonNull Class<F> fragmentClass, Bundle savedInstanceState) {
-        this.name = name;
-        this.fragmentClass = fragmentClass;
-        this.savedInstanceState = savedInstanceState;
-    }
 
     /**
      * Establishes a new Topic with a given name, Fragment class, and saved state
@@ -35,7 +22,8 @@ public class Topic<F extends TopicFragment> implements OnSaveInstanceStateListen
      * @param fragmentClass The Fragment used to display the topic
      */
     private Topic(@NonNull String name, @NonNull Class<F> fragmentClass) {
-        this(name, fragmentClass, null);
+        this.name = name;
+        this.fragmentClass = fragmentClass;
     }
 
     /**
@@ -60,19 +48,6 @@ public class Topic<F extends TopicFragment> implements OnSaveInstanceStateListen
         return this.fragmentClass;
     }
 
-    protected void setSavedInstanceState(Bundle savedInstanceState) {
-        this.savedInstanceState = savedInstanceState;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        setSavedInstanceState(savedInstanceState);
-    }
-
-    Bundle getSavedInstanceState() {
-        return this.savedInstanceState;
-    }
-
     public interface OnSelectTopicListener {
         void onSelectTopic(int topic);
     }
@@ -91,6 +66,8 @@ public class Topic<F extends TopicFragment> implements OnSaveInstanceStateListen
                 IntroductionFragment.class));
         allTopics.add(new Topic<>("Numerical Representation",
                 NumericalRepresentationFragment.class));
+        allTopics.add(new Topic<>("Data Retention Demo",
+                DataRetentionDemo.class));
 //        allTopics.add(new Topic("Complex Plane", ComplexPlaneFragment.class));
 //        allTopics.add(new Topic("Basic Operations", BasicOperationsFragment.class));
     }
@@ -102,8 +79,4 @@ public class Topic<F extends TopicFragment> implements OnSaveInstanceStateListen
     // the preferred approach. Look into some more durable persistent storage system
     // (i.e. database)
     // For a good read: https://developer.android.com/reference/android/app/Activity#onSaveInstanceState(android.os.Bundle)
-}
-
-interface OnSaveInstanceStateListener {
-    void onSaveInstanceState(Bundle savedInstanceState);
 }
