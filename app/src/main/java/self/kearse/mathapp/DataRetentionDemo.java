@@ -1,22 +1,18 @@
 package self.kearse.mathapp;
 
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class DataRetentionDemo extends TopicFragment
-        implements Observer<String>, View.OnClickListener {
+        implements View.OnClickListener {
 
     private DataRetentionDemoViewModel mViewModel;
 
@@ -34,23 +30,22 @@ public class DataRetentionDemo extends TopicFragment
         return view;
     }
 
-//    @Override
-//    public void onDestroyView() {
-//        mViewModel.getData().removeObserver(this);
-//        super.onDestroyView();
-//    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(DataRetentionDemoViewModel.class);
-        final TextView textView = getActivity().findViewById(R.id.RetentionDemoText);
-        mViewModel.getData().observe(this, this);
-        textView.setText(mViewModel.getData().getValue());
+        mViewModel = ViewModelProviders.of(getActivity()).get(DataRetentionDemoViewModel.class);
+        mViewModel.getData().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                TextView textView = requireActivity().findViewById(R.id.RetentionDemoText);
+                if (textView != null) {
+                    textView.setText(mViewModel.getData().getValue());
+                }
+            }
+        });
     }
 
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.RetentionTacoButton:
                 mViewModel.append("Taco");
@@ -62,11 +57,5 @@ public class DataRetentionDemo extends TopicFragment
                 mViewModel.clearData();
                 break;
         }
-    }
-
-    @Override
-    public void onChanged(String s) {
-        TextView textView = getActivity().findViewById(R.id.RetentionDemoText);
-        textView.setText(mViewModel.getData().getValue());
     }
 }

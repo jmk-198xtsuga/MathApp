@@ -5,9 +5,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class DataRetentionDemoViewModel extends ViewModel {
     private final MutableLiveData<String> data = new MutableLiveData<>();
     private boolean recentlyCleared;
