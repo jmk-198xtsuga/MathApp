@@ -1,6 +1,5 @@
 package self.kearse.mathapp;
 
-import android.os.Bundle;
 import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +66,7 @@ public class Topic<F extends TopicFragment> {
         allTopics.add(new Topic<>("Numerical Representation",
                 NumericalRepresentationFragment.class));
         allTopics.add(new Topic<>("Data Retention Demo",
-                DataRetentionDemo.class));
+                DataRetentionDemoFragment.class));
 //        allTopics.add(new Topic("Complex Plane", ComplexPlaneFragment.class));
 //        allTopics.add(new Topic("Basic Operations", BasicOperationsFragment.class));
     }
