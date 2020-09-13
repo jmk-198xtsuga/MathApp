@@ -13,7 +13,7 @@ public class ComplexDoubleCartesian extends Complex<Double> {
     private final Double real;
     private final Double imaginary;
 
-    public ComplexDoubleCartesian (Double real, Double imaginary) {
+    public ComplexDoubleCartesian (@NonNull Double real, @NonNull Double imaginary) {
         this.real = real;
         this.imaginary = imaginary;
     }

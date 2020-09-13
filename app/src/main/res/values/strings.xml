@@ -27,6 +27,13 @@
         coordinates, with a scalar modulus times an argument (radian angle) relative to the real
         axis.
     </string>
+    <string name="complex_roots_header">Complex Roots</string>
+    <string name="complex_roots_body">For every non-zero complex number, there are guaranteed to be
+        exactly <i>n</i> <i>n</i>-th roots.  For example, there are exactly 2 square roots of 1,
+        3 cube roots, 7 7-th roots, and so on.\n\nOne neat thing to notice, if you look at them on
+        the complex plane, they all fall on the same circle and are evenly spaced out.\n\nTo try
+        this out, you can enter any complex number below and see the list of its roots.
+    </string>
     <string name="cartesian_representation">Cartesian Representation</string>
     <string name="polar_representation">Polar Representation</string>
 </resources>
