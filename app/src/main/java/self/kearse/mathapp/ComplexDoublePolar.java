@@ -148,6 +148,7 @@ public class ComplexDoublePolar extends Complex<Double> {
      * Formats this number for LaTeX.
      * @return "&lt;m&gt;\,e^{&lt;a&gt;i}", such as "3\,e^{1.57i}"
      */
+    @NonNull
     @Override
     public String toLaTeX() {
         return String.format("%s\\,e^{%s\\,i}", this.modulus.toString(), this.argument.toString());

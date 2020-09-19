@@ -10,14 +10,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.DiffUtil.ItemCallback;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -26,11 +28,17 @@ import java.util.List;
 public class ComplexRootsFragment extends TopicFragment {
     private ComplexRootsFragmentViewModel mViewModel;
 
-    public static class RootsListAdapter extends RecyclerView.Adapter<RootsListAdapter.ViewHolder> {
+    public static class RootsListAdapter extends ListAdapter<Complex<? extends Number>, RootsListAdapter.ViewHolder> {
         private List<Complex<Double>> roots;
+        private static final DiffUtil.ItemCallback<Complex<? extends Number>> DIFF_CALLBACK;
 
-        public RootsListAdapter(List<Complex<Double>> roots) {
-            this.roots = roots;
+        protected RootsListAdapter() {
+            this(Complex.getDiffCallback());
+        }
+
+        protected RootsListAdapter(@NonNull DiffUtil.ItemCallback<Complex<? extends Number>> diffCallback) {
+            super(diffCallback);
+            DIFF_CALLBACK = diffCallback;
         }
 
         @Override
@@ -43,8 +51,8 @@ public class ComplexRootsFragment extends TopicFragment {
         }
 
         @Override
-        public void onBindViewHolder(RootsListAdapter.ViewHolder holder, int position) {
-            holder.textView.setText(roots.get(position).toSpannedString());
+        public void onBindViewHolder(@NonNull RootsListAdapter.ViewHolder holder, int position) {
+            holder.textView.setText(roots.get(position).toSpannedString(), TextView.BufferType.SPANNABLE);
         }
 
         @Override
@@ -99,6 +107,7 @@ public class ComplexRootsFragment extends TopicFragment {
                     RecyclerView.Adapter<?> adapter =
                             recyclerView.getAdapter();
                     if (adapter != null) {
+                        //TODO: this does not actually update the UI list
                         adapter.notifyDataSetChanged();
                     }
                 }
@@ -108,8 +117,7 @@ public class ComplexRootsFragment extends TopicFragment {
         rootsList.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         rootsList.setLayoutManager(layoutManager);
-        rootsAdapter = new RootsListAdapter(
-                mViewModel.getRootList().getValue());
+        rootsAdapter = new RootsListAdapter(mViewModel.getRootList().getValue());
         rootsList.setAdapter(rootsAdapter);
     }
 
@@ -173,11 +181,16 @@ public class ComplexRootsFragment extends TopicFragment {
     }
 
     public static class ComplexRootsFragmentViewModel extends androidx.lifecycle.ViewModel {
-        private final MutableLiveData<Complex<? extends Number>> ofNumber =
-                new MutableLiveData<Complex<? extends Number>>(new ComplexDoubleCartesian(1d, 0d));
-        private final MutableLiveData<Integer> focusedRoot = new MutableLiveData<>(0);
-        private final MutableLiveData<List<Complex<Double>>> rootList =
-                new MutableLiveData<List<Complex<Double>>>(new ArrayList<Complex<Double>>());
+        private final MutableLiveData<Complex<? extends Number>> ofNumber;
+        private final MutableLiveData<Integer> focusedRoot;
+        private final MutableLiveData<List<Complex<Double>>> rootList;
+
+        ComplexRootsFragmentViewModel() {
+            ofNumber = new MutableLiveData<Complex<? extends Number>>(new ComplexDoubleCartesian(1d, 0d));
+            focusedRoot = new MutableLiveData<>(0);
+            rootList = new MutableLiveData<List<Complex<Double>>>(Complex.roots(ofNumber.getValue(), 2));
+
+        }
 
         @NonNull
         LiveData<? extends Complex<? extends Number>> getNumber() {
@@ -192,10 +205,14 @@ public class ComplexRootsFragment extends TopicFragment {
             return rootList;
         }
 
+
+
         void updateData(@NonNull Complex<? extends Number> newNumber, @NonNull Integer root) {
             ofNumber.setValue(newNumber);
             focusedRoot.setValue(0);
-            rootList.setValue(Complex.roots(newNumber, root));
+            List<Complex<Double>> roots = rootList.getValue();
+            roots.clear();
+            roots.addAll(Complex.roots(newNumber, root));
         }
     }
 }

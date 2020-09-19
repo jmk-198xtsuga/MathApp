@@ -113,6 +113,7 @@ public class ComplexDoubleCartesian extends Complex<Double> {
         return String.format("%s+%si", this.real.toString(), this.imaginary.toString());
     }
 
+    @NonNull
     @Override
     public String toLaTeX() {
         return toString();

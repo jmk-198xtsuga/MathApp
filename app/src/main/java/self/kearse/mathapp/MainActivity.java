@@ -18,12 +18,12 @@ import android.widget.TextView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnSelectTopicListener {
-    private RecyclerView activityList;
-    private RecyclerView.Adapter<MainActivity.ActivityListAdapter.ViewHolder> activityAdapter;
-    private RecyclerView.LayoutManager layoutManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        RecyclerView activityList;
+        RecyclerView.Adapter<MainActivity.ActivityListAdapter.ViewHolder> activityAdapter;
+        RecyclerView.LayoutManager layoutManager;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         /* Reference: https://developer.android.com/training/basics/fragments/fragment-ui */
@@ -34,13 +34,13 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
             transaction.add(R.id.fragment_container, initial);
             transaction.commit();
         }
-        this.activityList = findViewById(R.id.activityMenu);
-        this.activityList.setHasFixedSize(true);
-        this.layoutManager = new LinearLayoutManager(this);
-        this.activityList.setLayoutManager(this.layoutManager);
-        this.activityAdapter = new ActivityListAdapter(
+        activityList = findViewById(R.id.activityMenu);
+        activityList.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        activityList.setLayoutManager(layoutManager);
+        activityAdapter = new ActivityListAdapter(
                 Topic.getTopicList(), this);
-        this.activityList.setAdapter(this.activityAdapter);
+        activityList.setAdapter(activityAdapter);
     }
 
     public void onSelectTopic(int topicPosition) {
