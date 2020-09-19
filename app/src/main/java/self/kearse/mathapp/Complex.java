@@ -2,6 +2,7 @@ package self.kearse.mathapp;
 
 import android.text.SpannedString;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public abstract class Complex <T extends Number> {
     /** The allowed error for certain methods and algorithms */
-    private static double TARGET_PRECISION = 1E-13;
+    private static final double TARGET_PRECISION = 1E-13;
     /** Returns the principal Argument of this. */
     public abstract T Argument ();
     /** Returns the modulus of this. */
@@ -31,6 +32,7 @@ public abstract class Complex <T extends Number> {
 
     /**
      * Generates the multiplicative inverse of the complex number.
+     * Note: this may be poorly defined if T is a non-decimal type.
      * @return the multiplicative inverse
      * @throws ArithmeticException if this is zero
      */
@@ -129,7 +131,7 @@ public abstract class Complex <T extends Number> {
         //TODO: I think rearranging else-if sequence would nix raw class warning, or careful
         // generic workings...
         else {
-            Complex diff = this.subtract((Complex) other);
+            Complex<T> diff = this.subtract((Complex<? extends Number>) other);
             return diff.modulus().doubleValue() < TARGET_PRECISION;
         }
     }
@@ -211,7 +213,7 @@ public abstract class Complex <T extends Number> {
      */
     public static List<Complex<Double>> roots (Complex<? extends Number> value, int degree)
         throws NullPointerException, IllegalArgumentException {
-        List<Complex<Double>> list = new ArrayList<Complex<Double>>();
+        List<Complex<Double>> list = new ArrayList<>();
         Complex<Double> principal = root(value, degree);
         Double modulus = principal.modulus();
         Double argument = principal.Argument();
@@ -236,6 +238,7 @@ public abstract class Complex <T extends Number> {
      * Formats the Complex number in LaTeX-style math code
      * @return a string with the LaTeX-style math code for the Complex number, without delimiters
      */
+    @NonNull
     public abstract String toLaTeX();
 
     /**
@@ -268,17 +271,42 @@ public abstract class Complex <T extends Number> {
         double decValue = 1d/degree;
         int oneLess = degree - 1;
         double delta = 1d;
-        Double root = Math.exp(decValue*Math.log(value.doubleValue()));
+        double root = Math.exp(decValue*Math.log(value.doubleValue()));
         while (delta > TARGET_PRECISION) {
-            Double next = decValue * ((oneLess * root) + (value.doubleValue()/Math.pow(root, oneLess)));
+            double next = decValue * ((oneLess * root) + (value.doubleValue()/Math.pow(root, oneLess)));
             delta = Math.abs(next - root);
             root = next;
         }
         /* Coerce root to integer when appropriate */
-        int intValue = root.intValue();
-        if (Math.pow(intValue, degree) == value.doubleValue()) root = Double.valueOf(intValue);
+        int intValue = (int) root;
+        if (Math.pow(intValue, degree) == value.doubleValue()) root = intValue;
         /* End integer coercion */
         return root;
     }
 
+    /**
+     * Provides a differ for Complex numbers.
+     * @param <Diff_T> The type of values internal to Complex.
+     * @return a differ with a speficied item and content diff check.
+     */
+    @NonNull
+    protected static <Diff_T extends Number> DiffUtil.ItemCallback<Complex<Diff_T>> getDiffCallback() {
+        return new Differ<>();
+    }
+
+    /**
+     * A differ to handle DiffUtil.ItemCallBack requests for Complex numbers.
+     * @param <Diff_T> The type of values internal to Complex.
+     */
+    private static class Differ<Diff_T extends Number> extends DiffUtil.ItemCallback<Complex<Diff_T>> {
+        @Override
+        public boolean areItemsTheSame(@NonNull Complex<Diff_T> oldItem, @NonNull Complex<Diff_T> newItem) {
+            return oldItem == newItem;
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Complex<Diff_T> oldItem, @NonNull Complex<Diff_T> newItem) {
+            return oldItem.equals(newItem);
+        }
+    }
 }
