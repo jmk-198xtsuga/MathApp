@@ -211,6 +211,7 @@ public abstract class Complex <T extends Number> {
      * @throws NullPointerException if value is null
      * @throws IllegalArgumentException if degree is zero
      */
+    @NonNull
     public static List<Complex<Double>> roots (Complex<? extends Number> value, int degree)
         throws NullPointerException, IllegalArgumentException {
         List<Complex<Double>> list = new ArrayList<>();
@@ -290,7 +291,7 @@ public abstract class Complex <T extends Number> {
      * @return a differ with a speficied item and content diff check.
      */
     @NonNull
-    protected static <Diff_T extends Number> DiffUtil.ItemCallback<Complex<Diff_T>> getDiffCallback() {
+    protected static <Diff_T extends Number> DiffUtil.ItemCallback<Complex<? extends Diff_T>> getDiffCallback() {
         return new Differ<>();
     }
 
@@ -298,14 +299,14 @@ public abstract class Complex <T extends Number> {
      * A differ to handle DiffUtil.ItemCallBack requests for Complex numbers.
      * @param <Diff_T> The type of values internal to Complex.
      */
-    private static class Differ<Diff_T extends Number> extends DiffUtil.ItemCallback<Complex<Diff_T>> {
+    private static class Differ<Diff_T extends Number> extends DiffUtil.ItemCallback<Complex<? extends Diff_T>> {
         @Override
-        public boolean areItemsTheSame(@NonNull Complex<Diff_T> oldItem, @NonNull Complex<Diff_T> newItem) {
+        public boolean areItemsTheSame(@NonNull Complex<? extends Diff_T> oldItem, @NonNull Complex<? extends Diff_T> newItem) {
             return oldItem == newItem;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Complex<Diff_T> oldItem, @NonNull Complex<Diff_T> newItem) {
+        public boolean areContentsTheSame(@NonNull Complex<? extends Diff_T> oldItem, @NonNull Complex<? extends Diff_T> newItem) {
             return oldItem.equals(newItem);
         }
     }
