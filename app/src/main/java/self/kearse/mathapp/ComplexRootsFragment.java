@@ -27,23 +27,21 @@ import java.util.List;
 public class ComplexRootsFragment extends TopicFragment {
     private ComplexRootsFragmentViewModel mViewModel;
 
-    public static class RootsListAdapter extends ListAdapter<Complex<? extends Number>, RootsListAdapter.ViewHolder> {
+    public static class RootsListAdapter<T extends Complex<? extends Number>> extends ListAdapter<T, RootsListAdapter.ViewHolder> {
         @NonNull
-        private List<Complex<Double>> roots;
-        //private final DiffUtil.ItemCallback<Complex<? extends Number>> diffCallback;
+        private List<? extends T> roots;
 
-        protected RootsListAdapter(@NonNull ItemCallback<Complex<? extends Number>> diffCallback) {
-            this(new ArrayList<Complex<Double>>(), diffCallback);
+        protected RootsListAdapter(@NonNull ItemCallback<T> diffCallback) {
+            this(new ArrayList<T>(), diffCallback);
         }
 
-        protected RootsListAdapter(@NonNull List<Complex<Double>> roots, @NonNull ItemCallback<Complex<? extends Number>> diffCallback) {
+        protected <List_T extends List<? extends T>> RootsListAdapter(@NonNull List_T roots, @NonNull ItemCallback<T> diffCallback) {
             super(diffCallback);
-            //this.diffCallback = diffCallback;
             this.roots = roots;
         }
 
-        protected RootsListAdapter(@NonNull List<Complex<Double>> roots) {
-            this(roots, Complex.getDiffCallback());
+        protected <List_T extends List<? extends T>> RootsListAdapter(@NonNull List_T roots) {
+            this(roots, Complex.<T>getDiffCallback());
         }
 
         @Override
@@ -99,7 +97,7 @@ public class ComplexRootsFragment extends TopicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         RecyclerView rootsList;
-        final RootsListAdapter rootsAdapter;
+        final RootsListAdapter<Complex<? extends Number>> rootsAdapter;
         RecyclerView.LayoutManager layoutManager;
 
         super.onViewCreated(view, savedInstanceState);
@@ -108,10 +106,10 @@ public class ComplexRootsFragment extends TopicFragment {
         rootsList.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         rootsList.setLayoutManager(layoutManager);
-        rootsAdapter = new RootsListAdapter(mViewModel.getRootList().getValue());
-        mViewModel.getRootList().observe(getViewLifecycleOwner(), new Observer<List<Complex<Double>>>() {
+        rootsAdapter = new RootsListAdapter<>(mViewModel.getRootList().getValue());
+        mViewModel.getRootList().observe(getViewLifecycleOwner(), new Observer<List<Complex<? extends Number>>>() {
             @Override
-            public void onChanged(List<Complex<Double>> list) {
+            public void onChanged(List<Complex<? extends Number>> list) {
                 rootsAdapter.submitList(list);
             }
         });
@@ -180,7 +178,7 @@ public class ComplexRootsFragment extends TopicFragment {
     public static class ComplexRootsFragmentViewModel extends androidx.lifecycle.ViewModel {
         @NonNull private final MutableLiveData<Complex<? extends Number>> ofNumber;
         private final MutableLiveData<Integer> focusedRoot;
-        @NonNull private final MutableLiveData<List<Complex<Double>>> rootList;
+        @NonNull private final MutableLiveData<List<Complex<? extends Number>>> rootList;
 
         public ComplexRootsFragmentViewModel() {
             ofNumber = new MutableLiveData<Complex<? extends Number>>(new ComplexDoubleCartesian(1d, 0d));
@@ -197,7 +195,7 @@ public class ComplexRootsFragment extends TopicFragment {
             return focusedRoot;
         }
         @NonNull
-        LiveData<List<Complex<Double>>> getRootList() {
+        LiveData<List<Complex<? extends Number>>> getRootList() {
             return rootList;
         }
 
@@ -207,3 +205,6 @@ public class ComplexRootsFragment extends TopicFragment {
         }
     }
 }
+
+//TODO: Review everything to see that the use of Complex<T> versus Complex<? extends Number> is correct
+//TODO: Review everything to see that the use of List<? extends Complex<>> versus List<Complex<>> is correct

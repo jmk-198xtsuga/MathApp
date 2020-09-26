@@ -212,9 +212,9 @@ public abstract class Complex <T extends Number> {
      * @throws IllegalArgumentException if degree is zero
      */
     @NonNull
-    public static List<Complex<Double>> roots (Complex<? extends Number> value, int degree)
+    public static List<Complex<? extends Number>> roots (Complex<? extends Number> value, int degree)
         throws NullPointerException, IllegalArgumentException {
-        List<Complex<Double>> list = new ArrayList<>();
+        List<Complex<? extends Number>> list = new ArrayList<>();
         Complex<Double> principal = root(value, degree);
         Double modulus = principal.modulus();
         Double argument = principal.Argument();
@@ -287,27 +287,29 @@ public abstract class Complex <T extends Number> {
 
     /**
      * Provides a differ for Complex numbers.
-     * @param <Diff_T> The type of values internal to Complex.
+     * @param <Diff_T> The type of Complex numbers.
      * @return a differ with a speficied item and content diff check.
      */
     @NonNull
-    protected static <Diff_T extends Number> DiffUtil.ItemCallback<Complex<? extends Diff_T>> getDiffCallback() {
+    protected static <Diff_T extends Complex<? extends Number>> DiffUtil.ItemCallback<Diff_T> getDiffCallback() {
         return new Differ<>();
     }
 
     /**
      * A differ to handle DiffUtil.ItemCallBack requests for Complex numbers.
-     * @param <Diff_T> The type of values internal to Complex.
+     * @param <Diff_T> The type of Complex numbers.
      */
-    private static class Differ<Diff_T extends Number> extends DiffUtil.ItemCallback<Complex<? extends Diff_T>> {
+    private static class Differ<Diff_T extends Complex<? extends Number>> extends DiffUtil.ItemCallback<Diff_T> {
         @Override
-        public boolean areItemsTheSame(@NonNull Complex<? extends Diff_T> oldItem, @NonNull Complex<? extends Diff_T> newItem) {
+        public boolean areItemsTheSame(@NonNull Diff_T oldItem, @NonNull Diff_T newItem) {
             return oldItem == newItem;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Complex<? extends Diff_T> oldItem, @NonNull Complex<? extends Diff_T> newItem) {
+        public boolean areContentsTheSame(@NonNull Diff_T oldItem, @NonNull Diff_T newItem) {
             return oldItem.equals(newItem);
         }
     }
 }
+
+//TODO: Review everything to see that the use of Complex<T> versus Complex<? extends Number> is correct
