@@ -16,19 +16,19 @@ public abstract class Complex <T extends Number> {
     /** The allowed error for certain methods and algorithms */
     private static final double TARGET_PRECISION = 1E-13;
     /** Returns the principal Argument of this. */
-    public abstract T Argument ();
+    @NonNull public abstract T Argument ();
     /** Returns the modulus of this. */
-    public abstract T modulus ();
+    @NonNull public abstract T modulus ();
     /** Returns the real-value component of the Cartesian expression of this. */
-    public abstract T real ();
+    @NonNull public abstract T real ();
     /** Returns the imaginary-value component of the Cartesian expression of this. */
-    public abstract T imaginary();
+    @NonNull public abstract T imaginary();
 
     /**
      * Generate the additive inverse of the complex number.
      * @return the additive inverse
      */
-    public abstract Complex<T> addInverse ();
+    @NonNull public abstract Complex<T> addInverse ();
 
     /**
      * Generates the multiplicative inverse of the complex number.
@@ -36,13 +36,13 @@ public abstract class Complex <T extends Number> {
      * @return the multiplicative inverse
      * @throws ArithmeticException if this is zero
      */
-    public abstract Complex<T> multInverse () throws ArithmeticException;
+    @NonNull public abstract Complex<T> multInverse () throws ArithmeticException;
 
     /**
      * Generate the complement of the complex number.
      * @return a-bi, for complex number a+bi
      */
-    public abstract Complex<T> complement ();
+    @NonNull public abstract Complex<T> complement ();
 
     //TODO: Explore static methods for mathematical operations.
     // Currently the mathematical operations are controlled via object-oriented methods,
@@ -52,29 +52,23 @@ public abstract class Complex <T extends Number> {
      * Adds the value of another Complex number to this.
      * @param other another Complex number
      * @return a new Complex number representing the sum of the two numbers
-     * @throws NullPointerException if other is null
      */
-    public abstract Complex<T> add (Complex<? extends Number> other) throws NullPointerException;
+    @NonNull public abstract Complex<T> add (@NonNull Complex<? extends Number> other);
 
     /**
      * Subtracts another Complex number from this.
      * @param other another Complex number
      * @return a new Complex number representing the difference of the two numbers
-     * @throws NullPointerException if other is null
      */
-    public Complex<T> subtract (Complex<? extends Number> other) throws NullPointerException {
-        if (other == null) {
-            throw new NullPointerException("Cannot subtract a null reference");
-        }
-        else return add(other.addInverse());
+    @NonNull public Complex<T> subtract (@NonNull Complex<? extends Number> other) {
+        return add(other.addInverse());
     }
 
     /** Multiplies another Complex number with this.
      * @param other another Complex number
      * @return a new Complex number representing the product of the two numbers
-     * @throws NullPointerException if other is null
      */
-    public abstract Complex<T> multiply (Complex<? extends Number> other) throws NullPointerException;
+    @NonNull public abstract Complex<T> multiply (Complex<? extends Number> other);
 
     /**
      * Divides this by another complex number.  Should utilize the complement of the denominator
@@ -82,14 +76,10 @@ public abstract class Complex <T extends Number> {
      * @param denominator another Complex number
      * @return a new Complex number representing the quotient of the two numbers
      * @throws ArithmeticException if denominator is zero
-     * @throws NullPointerException if denominator is null
      */
-    public Complex<T> divide (Complex<? extends Number> denominator)
-            throws ArithmeticException, NullPointerException {
-        if (denominator == null) {
-            throw new NullPointerException("Cannot divide by a null reference");
-        }
-        else if (denominator.modulus().equals(0)) {
+    @NonNull public Complex<T> divide (@NonNull Complex<? extends Number> denominator)
+            throws ArithmeticException {
+        if (denominator.modulus().equals(0)) {
             throw new ArithmeticException("Attempted to divide by zero");
         }
         else return this.multiply(denominator.multInverse());
@@ -147,23 +137,18 @@ public abstract class Complex <T extends Number> {
      * Raises this to the given exponent.
      * @param exponent the desired exponent
      * @return a new Complex number representing the exponentiation result
-     * @throws NullPointerException if exponent is null
      */
-    public Complex<Double> pow (Complex<? extends Number> exponent) throws NullPointerException {
-        if (exponent == null) {
-            throw new NullPointerException("cannot exponentiate by a null reference");
-        }
-        else return Exp(Log(this).multiply(exponent));
+    @NonNull public Complex<? extends Number> pow (@NonNull Complex<? extends Number> exponent) {
+        return Exp(Log(this).multiply(exponent));
     }
 
     /**
      * Determines the principal complex Logarithm of this
      * @return a new Complex number representing the Logarithm
      * @throws ArithmeticException if the modulus of value is zero
-     * @throws NullPointerException if value is null
      */
-    public static Complex<Double> Log (Complex<? extends Number> value)
-            throws NullPointerException, ArithmeticException {
+    @NonNull public static Complex<? extends Number> Log (@NonNull Complex<? extends Number> value)
+            throws ArithmeticException {
         if (value.modulus().equals(0d)) {
             throw new ArithmeticException("Cannot take the logarithm of 0");
         } else {
@@ -176,9 +161,8 @@ public abstract class Complex <T extends Number> {
      * Determines the principal exponentiation of the natural logarithm <i>e</i> to a given exponent.
      * @param exponent the desired exponent
      * @return a new Complex number representing the exponentiation result
-     * @throws NullPointerException if exponent is null
      */
-    public static Complex<Double> Exp (Complex<? extends Number> exponent) throws NullPointerException {
+    @NonNull public static Complex<? extends Number> Exp (@NonNull Complex<? extends Number> exponent) {
         return new ComplexDoublePolar(exponent.imaginary().doubleValue(),
                 Math.exp(exponent.real().doubleValue()));
     }
@@ -188,14 +172,14 @@ public abstract class Complex <T extends Number> {
      * @param value the number to find the root of
      * @param degree the exponent <i>n</i> such that (root)^n=value
      * @return a new Complex number with the principal n-th root
-     * @throws NullPointerException if value is null
      * @throws IllegalArgumentException if degree is zero
      */
-    public static Complex<Double> root (Complex<? extends Number> value, int degree)
-            throws NullPointerException, IllegalArgumentException {
-        Double modulus = rootNewton(value.modulus(), degree);
-        Double Argument = value.Argument().doubleValue();
-        if (Argument.equals(0d)) {
+    @NonNull
+    public static Complex<? extends Number> root (@NonNull Complex<? extends Number> value, int degree)
+            throws IllegalArgumentException {
+        double modulus = rootNewton(value.modulus(), degree);
+        double Argument = value.Argument().doubleValue();
+        if (Argument == 0d) {
             Argument = (Math.PI / degree) * 2d;
         } else {
             Argument = Argument / degree;
@@ -208,16 +192,15 @@ public abstract class Complex <T extends Number> {
      * @param value the number to find the roots of
      * @param degree the exponent <i>n</i> such that (root)^n=value
      * @return a new List of Complex numbers representing the <i>n</i> unique roots of value
-     * @throws NullPointerException if value is null
      * @throws IllegalArgumentException if degree is zero
      */
     @NonNull
-    public static List<Complex<? extends Number>> roots (Complex<? extends Number> value, int degree)
-        throws NullPointerException, IllegalArgumentException {
+    public static List<Complex<? extends Number>> roots (@NonNull Complex<? extends Number> value,
+                                                         int degree) throws IllegalArgumentException {
         List<Complex<? extends Number>> list = new ArrayList<>();
-        Complex<Double> principal = root(value, degree);
-        Double modulus = principal.modulus();
-        Double argument = principal.Argument();
+        Complex<? extends Number> principal = root(value, degree);
+        double modulus = principal.modulus().doubleValue();
+        double argument = principal.Argument().doubleValue();
         list.add(principal);
         double argIncrement = (Math.PI / degree) * 2d;
         for (int i = 1; i < degree; i++) {
@@ -246,7 +229,7 @@ public abstract class Complex <T extends Number> {
      * Formats the Complex number in a SpannableString (for Android TextView use)
      * @return a SpannableString for the Complex number
      */
-    public abstract SpannedString toSpannedString();
+    @NonNull public abstract SpannedString toSpannedString();
 
     /**
      * Computes the n-th root of a Real number.  Utilizes a exponent/logarithm computation to seed
@@ -255,14 +238,11 @@ public abstract class Complex <T extends Number> {
      * @param value a real number
      * @param degree the degree of the root
      * @return the real value such that raising it to degree yields value (within approximation)
-     * @throws NullPointerException if value is null
      * @throws IllegalArgumentException if value is negative
      */
-    private static Double rootNewton (Number value, int degree)
-            throws NullPointerException, IllegalArgumentException {
-        if (value == null) {
-            throw new NullPointerException("Cannot take the root of null");
-        } else if (value.doubleValue() < 0) {
+    private static double rootNewton (@NonNull Number value, int degree)
+            throws IllegalArgumentException {
+        if (value.doubleValue() < 0) {
             throw new IllegalArgumentException("Value should be a positive real number");
         }
         /* Short-circuit for roots of zero and one*/
@@ -311,5 +291,3 @@ public abstract class Complex <T extends Number> {
         }
     }
 }
-
-//TODO: Review everything to see that the use of Complex<T> versus Complex<? extends Number> is correct
