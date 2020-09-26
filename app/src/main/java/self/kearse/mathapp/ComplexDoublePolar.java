@@ -19,15 +19,10 @@ public class ComplexDoublePolar extends Complex<Double> {
     /** Constructs a new complex number in radial notation.
      * @param argument the argument of the number, in radians
      * @param modulus the modulus of the number
-     * @throws NullPointerException if argument or modulus are null
      */
-    public ComplexDoublePolar (Double argument, Double modulus) throws NullPointerException {
-        if ( (argument == null) || (modulus == null) ) {
-            throw new NullPointerException("Cannot use null values");
-        } else {
-            this.argument = argument;
-            this.modulus = modulus;
-        }
+    public ComplexDoublePolar (@NonNull Double argument, @NonNull Double modulus) {
+        this.argument = argument;
+        this.modulus = modulus;
     }
 
     /**
@@ -35,6 +30,7 @@ public class ComplexDoublePolar extends Complex<Double> {
      * the principal Argument.
      * @return the principal Argument of this, where -pi < theta <= pi
      */
+    @NonNull
     @Override
     public Double Argument() {
         if(this.modulus < 0) {
@@ -50,18 +46,21 @@ public class ComplexDoublePolar extends Complex<Double> {
      * Returns the modulus of this.
      * @return the modulus of this
      */
+    @NonNull
     @Override
     public Double modulus() {
         return this.modulus;
     }
 
     /** Returns the real-value component of the Cartesian expression of this. */
+    @NonNull
     @Override
     public Double real() {
         return this.modulus * Math.cos(this.argument);
     }
 
     /** Returns the imaginary-value component of the Cartesian expression of this. */
+    @NonNull
     @Override
     public Double imaginary() {
         return this.modulus * Math.sin(this.argument);
@@ -71,6 +70,7 @@ public class ComplexDoublePolar extends Complex<Double> {
      * Generate the additive inverse of the complex number.
      * @return the additive inverse, with simply the negative modulus and same argument
      */
+    @NonNull
     @Override
     public Complex<Double> addInverse() {
         return new ComplexDoublePolar(argument, -modulus);
@@ -81,6 +81,7 @@ public class ComplexDoublePolar extends Complex<Double> {
      * @return the multiplicative inverse, with the negative argument and inverse of the modulus
      * @throws ArithmeticException if this is zero
      */
+    @NonNull
     @Override
     public Complex<Double> multInverse() throws ArithmeticException {
         if (modulus.equals(0d)) {
@@ -94,6 +95,7 @@ public class ComplexDoublePolar extends Complex<Double> {
      * Generate the complement of the complex number.
      * @return r*e^(-i*theta), for complex number r*e^(i*theta)
      */
+    @NonNull
     @Override
     public Complex<Double> complement() {
         return new ComplexDoublePolar(-argument, modulus);
@@ -103,35 +105,26 @@ public class ComplexDoublePolar extends Complex<Double> {
      * Adds the value of another Complex number to this.
      * @param other another Complex number
      * @return a new Complex number representing the sum of the two numbers, in Cartesian form
-     * @throws NullPointerException if other is null
      */
+    @NonNull
     @Override
-    public Complex<Double> add(Complex<? extends Number> other) throws NullPointerException {
-        if (other == null) {
-            throw new NullPointerException("Cannot add a null reference");
-        }
-        else {
-            Double real = this.real() + other.real().doubleValue();
-            Double imaginary = this.imaginary() + other.imaginary().doubleValue();
-            return new ComplexDoubleCartesian(real, imaginary);
-        }
+    public Complex<Double> add(@NonNull Complex<? extends Number> other) {
+        Double real = this.real() + other.real().doubleValue();
+        Double imaginary = this.imaginary() + other.imaginary().doubleValue();
+        return new ComplexDoubleCartesian(real, imaginary);
     }
 
     /**
      * Multiplies another Complex number with this.
      * @param other another Complex number
      * @return a new Complex number representing the product of the two numbers, in polar form
-     * @throws NullPointerException if other is null
      */
+    @NonNull
     @Override
-    public Complex<Double> multiply(Complex<? extends Number> other) throws NullPointerException {
-        if (other == null) {
-            throw new NullPointerException("Cannot add a null pointer");
-        } else {
-            Double argument = this.argument + other.Argument().doubleValue();
-            Double modulus = this.modulus * other.modulus().doubleValue();
-            return new ComplexDoublePolar(argument, modulus);
-        }
+    public Complex<Double> multiply(@NonNull Complex<? extends Number> other) {
+        Double argument = this.argument + other.Argument().doubleValue();
+        Double modulus = this.modulus * other.modulus().doubleValue();
+        return new ComplexDoublePolar(argument, modulus);
     }
 
     /**
@@ -154,6 +147,7 @@ public class ComplexDoublePolar extends Complex<Double> {
         return String.format("%s\\,e^{%s\\,i}", this.modulus.toString(), this.argument.toString());
     }
 
+    @NonNull
     @Override
     public SpannedString toSpannedString() {
         int superscriptIndex, italicIndex;
@@ -219,12 +213,8 @@ public class ComplexDoublePolar extends Complex<Double> {
      * Computes the principal Argument of a given argument.
      * @param argument a value in radians
      * @return The radian value in the range -&pi;&nbsp;&lt;&nbsp;arg&nbsp;&leq;&nbsp;&pi;
-     * @throws IllegalArgumentException if argument is null
      */
-    private Double principalArgument(Number argument) throws IllegalArgumentException {
-        if (argument == null) {
-            throw new IllegalArgumentException("Cannot take the argument of null");
-        }
+    private double principalArgument(@NonNull Number argument) {
         double arg = argument.doubleValue();
         if ( (arg > Math.PI) || (arg <= -Math.PI) ) {
             arg = arg % (2 * Math.PI);

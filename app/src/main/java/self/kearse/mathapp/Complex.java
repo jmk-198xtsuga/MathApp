@@ -68,7 +68,7 @@ public abstract class Complex <T extends Number> {
      * @param other another Complex number
      * @return a new Complex number representing the product of the two numbers
      */
-    @NonNull public abstract Complex<T> multiply (Complex<? extends Number> other);
+    @NonNull public abstract Complex<T> multiply (@NonNull Complex<? extends Number> other);
 
     /**
      * Divides this by another complex number.  Should utilize the complement of the denominator
@@ -118,8 +118,6 @@ public abstract class Complex <T extends Number> {
             }
         }
         /* End external type checking */
-        //TODO: I think rearranging else-if sequence would nix raw class warning, or careful
-        // generic workings...
         else {
             Complex<T> diff = this.subtract((Complex<? extends Number>) other);
             return diff.modulus().doubleValue() < TARGET_PRECISION;

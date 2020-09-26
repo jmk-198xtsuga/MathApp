@@ -23,6 +23,7 @@ public class ComplexDoubleCartesian extends Complex<Double> {
      * be positive.
      * @return the principal Argument of this
      */
+    @NonNull
     @Override
     public Double Argument() {
         double Argument;
@@ -51,30 +52,36 @@ public class ComplexDoubleCartesian extends Complex<Double> {
      * an extra square.
      * @return the square of the modulus of the Complex number
      */
+    @NonNull
     private Double modulusSquared() {
         return this.real * this.real + this.imaginary * this.imaginary;
     }
 
+    @NonNull
     @Override
     public Double modulus() {
         return Math.sqrt(modulusSquared());
     }
 
+    @NonNull
     @Override
     public Double real() {
         return this.real;
     }
 
+    @NonNull
     @Override
     public Double imaginary() {
         return this.imaginary;
     }
 
+    @NonNull
     @Override
     public Complex<Double> addInverse() {
         return new ComplexDoubleCartesian(-this.real, -this.imaginary);
     }
 
+    @NonNull
     @Override
     public Complex<Double> multInverse() throws ArithmeticException {
         if (this.real.equals(0d) && this.imaginary.equals(0d)) {
@@ -87,19 +94,22 @@ public class ComplexDoubleCartesian extends Complex<Double> {
         }
     }
 
+    @NonNull
     @Override
     public Complex<Double> complement() {
         return new ComplexDoubleCartesian(this.real, -this.imaginary);
     }
 
+    @NonNull
     @Override
-    public Complex<Double> add(Complex<? extends Number> other) throws NullPointerException {
+    public Complex<Double> add(@NonNull Complex<? extends Number> other) {
         return new ComplexDoubleCartesian(this.real + other.real().doubleValue(),
                 this.imaginary + other.imaginary().doubleValue());
     }
 
+    @NonNull
     @Override
-    public Complex<Double> multiply(Complex<? extends Number> other) throws NullPointerException {
+    public Complex<Double> multiply(@NonNull Complex<? extends Number> other) {
         Double real = (this.real * other.real().doubleValue()) -
                 (this.imaginary * other.imaginary().doubleValue());
         Double imaginary = (this.real * other.imaginary().doubleValue()) +
@@ -119,6 +129,7 @@ public class ComplexDoubleCartesian extends Complex<Double> {
         return toString();
     }
 
+    @NonNull
     @Override
     public SpannedString toSpannedString() {
         int italicIndex;
