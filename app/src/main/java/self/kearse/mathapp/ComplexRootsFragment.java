@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,7 @@ public class ComplexRootsFragment extends TopicFragment {
     private ComplexRootsFragmentViewModel mViewModel;
 
     public static class RootsListAdapter<T extends Complex<? extends Number>> extends ListAdapter<T, RootsListAdapter.ViewHolder> {
+        //TODO: here's the error, we're using an internal roots list that technically ain't changing
         @NonNull
         private List<? extends T> roots;
 
@@ -202,9 +202,11 @@ public class ComplexRootsFragment extends TopicFragment {
         void updateData(@NonNull Complex<? extends Number> newNumber, @NonNull Integer root) {
             ofNumber.setValue(newNumber);
             focusedRoot.setValue(0);
+            rootList.postValue(Complex.roots(newNumber, root));
         }
     }
 }
 
 //TODO: Review everything to see that the use of Complex<T> versus Complex<? extends Number> is correct
+
 //TODO: Review everything to see that the use of List<? extends Complex<>> versus List<Complex<>> is correct
