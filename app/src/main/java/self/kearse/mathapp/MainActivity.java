@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,8 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.List;
+import self.kearse.mathapp.Topic.OnSelectTopicListener;
 
 public class MainActivity extends AppCompatActivity implements OnSelectTopicListener {
     @Override
@@ -91,17 +90,6 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
             holder.textView.setText(activities.get(position).getName());
         }
 
-//        @Override
-//        public void onClick(View view) {
-//            if (view instanceof TextView) {
-//                Toast message = Toast.makeText(view.getContext(),
-//                        ((TextView) view).getText(),
-//                        Toast.LENGTH_SHORT);
-//                message.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-//                message.show();
-//            }
-//        }
-
         @Override
         public int getItemCount() {
             return activities.size();
@@ -127,21 +115,4 @@ public class MainActivity extends AppCompatActivity implements OnSelectTopicList
             }
         }
     }
-}
-
-/**
- * Providing an interface for topic selection so that I can update that from a static
- * RecyclerView.ViewHolder
- */
-interface OnSelectTopicListener {
-    //TODO: Intending to better design the interaction between MainActivity and TopicFragment
-
-    /* Referencing https://developer.android.com/guide/components/fragments
-     * and https://android.jlelse.eu/click-listener-for-recyclerview-adapter-2d17a6f6f6c9 */
-
-    /**
-     * Respond to the user selecting the topic listed at the indicated position
-     * @param position the position of the topic in a list
-     */
-    void onSelectTopic(int position);
 }
