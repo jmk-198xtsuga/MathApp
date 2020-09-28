@@ -20,56 +20,13 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+/** Android fragment for displaying information about Complex roots. */
 public class ComplexRootsFragment extends TopicFragment {
+    /** ViewModel for the complex number and roots list. */
     private ComplexRootsFragmentViewModel mViewModel;
-
-    public static class RootsListAdapter<T extends Complex<? extends Number>> extends ListAdapter<T, RootsListAdapter.ViewHolder> {
-        //TODO: here's the error, we're using an internal roots list that technically ain't changing
-        @NonNull
-        private List<? extends T> roots;
-
-        protected RootsListAdapter(@NonNull ItemCallback<T> diffCallback) {
-            this(new ArrayList<T>(), diffCallback);
-        }
-
-        protected <List_T extends List<? extends T>> RootsListAdapter(@NonNull List_T roots, @NonNull ItemCallback<T> diffCallback) {
-            super(diffCallback);
-            this.roots = roots;
-        }
-
-        protected <List_T extends List<? extends T>> RootsListAdapter(@NonNull List_T roots) {
-            this(roots, Complex.<T>getDiffCallback());
-        }
-
-        @Override
-        @NonNull
-        public RootsListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView v = (TextView) LayoutInflater.from(parent.getContext()).
-                    inflate(android.R.layout.simple_list_item_1, parent, false);
-            RootsListAdapter.ViewHolder vh = new RootsListAdapter.ViewHolder(v);
-            return vh;
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull RootsListAdapter.ViewHolder holder, int position) {
-            holder.textView.setText(roots.get(position).toSpannedString(), TextView.BufferType.SPANNABLE);
-        }
-
-        @Override
-        public int getItemCount() { return roots.size(); }
-
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-            protected TextView textView;
-
-            public ViewHolder(TextView v) {
-                super(v);
-                this.textView = v;
-            }
-        }
-    }
 
     /** Prepares the fragment view by applying the XML layout and adding button listeners. */
     @Override
@@ -106,7 +63,7 @@ public class ComplexRootsFragment extends TopicFragment {
         rootsList.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         rootsList.setLayoutManager(layoutManager);
-        rootsAdapter = new RootsListAdapter<>(mViewModel.getRootList().getValue());
+        rootsAdapter = new RootsListAdapter<>();
         mViewModel.getRootList().observe(getViewLifecycleOwner(), new Observer<List<Complex<? extends Number>>>() {
             @Override
             public void onChanged(List<Complex<? extends Number>> list) {
@@ -114,9 +71,24 @@ public class ComplexRootsFragment extends TopicFragment {
             }
         });
         rootsList.setAdapter(rootsAdapter);
+        EditText inputReal = view.findViewById(R.id.inputReal);
+        EditText inputComplex = view.findViewById(R.id.inputComplex);
+        EditText inputDegree = view.findViewById(R.id.inputDegree);
+        Complex<? extends Number> root = mViewModel.getNumber().getValue();
+        List<Complex<? extends Number>> roots = mViewModel.getRootList().getValue();
+        if (root != null && roots != null) {
+            inputReal.setText(root.real().toString());
+            inputComplex.setText(root.imaginary().toString());
+            inputDegree.setText(String.format(Locale.getDefault(),"%d", roots.size()));
+        }
     }
 
+    /** Listener class for the Update button that computes the roots of a given Complex number. */
     class UpdateClickListener implements View.OnClickListener {
+        /**
+         * Computes the roots of a given Complex number when the button is clicked.
+         * @param v The view for which a click was detected.
+         */
         @Override
         public void onClick(View v) {
             Log.d(ComplexRootsFragment.class.getSimpleName(), "Update Click Received");
@@ -137,18 +109,40 @@ public class ComplexRootsFragment extends TopicFragment {
         }
     }
 
+    //TODO: Change the way input validation is handled, the single-input method is sufficient,
+    // and perhaps an alternate listener could be added to the text fields specifically for the
+    // Update button clickability.
+    /** Listener class for the input fields that rates whether appropriate values are given. */
     class InputValidationListener implements TextWatcher {
+        /** The TextView input to be watched. */
         private final TextView textView;
 
+        /** Prepares a new Listener by recording a reference to the given TextView.
+         * @param textView The TextView input to be watched.
+         */
         InputValidationListener(@NonNull TextView textView) {
             this.textView = textView;
         }
 
+        /**
+         * Validation method to run before text is changed.  Does nothing, currently.
+         * @param s The supplied input.
+         * @param start The beginning position of changed text.
+         * @param count The number of consecutive positions changed.
+         * @param after The length of the upcoming change.
+         */
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // do nothing
         }
 
+        /**
+         * Validation method to run once text is changed.  Warns user if input is empty.
+         * @param s The supplied input.
+         * @param start The beginning position of changed text.
+         * @param before The length of the replaced original text.
+         * @param count The length of the new text.
+         */
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if ("".equals(s.toString())) {
@@ -156,6 +150,11 @@ public class ComplexRootsFragment extends TopicFragment {
             }
         }
 
+        /**
+         * Validation method to run after text is changed.  Sets the Update button to be clickable
+         * if all the inputs are valid, otherwise sets it as unclickable.
+         * @param s The supplied input.
+         */
         @Override
         public void afterTextChanged(Editable s) {
             Log.d(ComplexRootsFragment.class.getSimpleName(), "Text Change Observed");
@@ -175,34 +174,89 @@ public class ComplexRootsFragment extends TopicFragment {
         }
     }
 
+    /** A ViewModel class for ComplexRootsFragment. */
     public static class ComplexRootsFragmentViewModel extends androidx.lifecycle.ViewModel {
-        @NonNull private final MutableLiveData<Complex<? extends Number>> ofNumber;
-        private final MutableLiveData<Integer> focusedRoot;
-        @NonNull private final MutableLiveData<List<Complex<? extends Number>>> rootList;
+        /** The number of which roots are computed. */
+        @NonNull private static final MutableLiveData<Complex<? extends Number>> ofNumber =
+                new MutableLiveData<Complex<? extends Number>>(new ComplexDoubleCartesian(1d, 0d));
+        /** The root which is currently focused on in the RecyclerView, to conserve scroll position. */
+        private static final MutableLiveData<Integer> focusedRoot = new MutableLiveData<>(0);
+        /** The list of roots to display. */
+        @NonNull private static final MutableLiveData<List<Complex<? extends Number>>> rootList =
+                new MutableLiveData<>(Complex.roots(ofNumber.getValue(), 2));
 
-        public ComplexRootsFragmentViewModel() {
-            ofNumber = new MutableLiveData<Complex<? extends Number>>(new ComplexDoubleCartesian(1d, 0d));
-            focusedRoot = new MutableLiveData<>(0);
-            rootList = new MutableLiveData<>(Complex.roots(ofNumber.getValue(), 2));
-        }
-
+        /** The number of which roots are computed. */
         @NonNull
         LiveData<? extends Complex<? extends Number>> getNumber() {
             return ofNumber;
         }
+        /** The root which is currently focused on in the RecyclerView. */
         @NonNull
         LiveData<Integer> getFocusedRoot() {
             return focusedRoot;
         }
+        /** The list of roots to display. */
         @NonNull
         LiveData<List<Complex<? extends Number>>> getRootList() {
             return rootList;
         }
 
-        void updateData(@NonNull Complex<? extends Number> newNumber, @NonNull Integer root) {
+        /**
+         * Updates the information in the ViewModel with a new Complex number and new list of roots.
+         * @param newNumber The new number of which roots will be computed.
+         * @param degree The degree (or quantity) of roots to generate.
+         */
+        void updateData(@NonNull Complex<? extends Number> newNumber, @NonNull Integer degree) {
             ofNumber.setValue(newNumber);
             focusedRoot.setValue(0);
-            rootList.postValue(Complex.roots(newNumber, root));
+            rootList.postValue(Complex.roots(newNumber, degree));
+        }
+    }
+
+    /**
+     * Display adapter for RecyclerView that presents the list of Complex numbers.
+     * @param <T> Complex or any extended type thereof, for the numbers in the list.
+     */
+    public static class RootsListAdapter<T extends Complex<? extends Number>> extends ListAdapter<T, RootsListAdapter.ViewHolder> {
+        /**
+         * Prepares a RootsListAdapter with a specified callback.
+         * @param diffCallback A DiffUtil callback to see when items change.
+         */
+        protected RootsListAdapter(@NonNull ItemCallback<T> diffCallback) {
+            super(diffCallback);
+        }
+
+        /** Prepares a RootsListAdapter with the default callback from Complex. */
+        protected RootsListAdapter() {
+            this(Complex.<T>getDiffCallback());
+        }
+
+        /** Generates a new ViewHolder using a basic TextView. */
+        @Override
+        @NonNull
+        public RootsListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            TextView v = (TextView) LayoutInflater.from(parent.getContext()).
+                    inflate(android.R.layout.simple_list_item_1, parent, false);
+            RootsListAdapter.ViewHolder vh = new RootsListAdapter.ViewHolder(v);
+            return vh;
+        }
+
+        /** Sets the ViewHolder's TextView to the SpannedString formatted Complex number. */
+        @Override
+        public void onBindViewHolder(@NonNull RootsListAdapter.ViewHolder holder, int position) {
+            holder.textView.setText(getItem(position).toSpannedString(), TextView.BufferType.SPANNABLE);
+        }
+
+        /** A ViewHolder using a basic TextView. */
+        public static class ViewHolder extends RecyclerView.ViewHolder {
+            /** The View's primary TextView. */
+            protected TextView textView;
+
+            /** Initializes a new ViewHolder and records the associated TextView. */
+            public ViewHolder(TextView v) {
+                super(v);
+                this.textView = v;
+            }
         }
     }
 }
@@ -210,3 +264,5 @@ public class ComplexRootsFragment extends TopicFragment {
 //TODO: Review everything to see that the use of Complex<T> versus Complex<? extends Number> is correct
 
 //TODO: Review everything to see that the use of List<? extends Complex<>> versus List<Complex<>> is correct
+
+//TODO: layout improvement for when a small screen is landscape, potentially with a pop-up RecyclerView.
