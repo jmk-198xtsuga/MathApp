@@ -3,20 +3,18 @@ package self.kearse.mathapp;
 import android.text.SpannedString;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A representation of complex numbers and set of operations for interacting with them.
- * @param <T> The numerical type for representing component values, logically should be either
- *           Float or Double
+ * @param <T> The type for representing component values
  * @author Justin Kearse
  */
-public abstract class Complex <T extends Number> {
-    /** The allowed error for certain methods and algorithms */
-    private static final double TARGET_PRECISION = 1E-13;
+public abstract class Complex<T> {
     /** Returns the principal Argument of this. */
     @NonNull public abstract T Argument ();
+    /** Returns the current little-a argument of this. */
+    @NonNull public abstract T argument();
     /** Returns the modulus of this. */
     @NonNull public abstract T modulus ();
     /** Returns the real-value component of the Cartesian expression of this. */
@@ -44,23 +42,19 @@ public abstract class Complex <T extends Number> {
      */
     @NonNull public abstract Complex<T> complement ();
 
-    //TODO: Explore static methods for mathematical operations.
-    // Currently the mathematical operations are controlled via object-oriented methods,
-    // which is functional yet there might be a better sytnax implementation of these.
-
     /**
      * Adds the value of another Complex number to this.
      * @param other another Complex number
      * @return a new Complex number representing the sum of the two numbers
      */
-    @NonNull public abstract Complex<T> add (@NonNull Complex<? extends Number> other);
+    @NonNull public abstract Complex<T> add (@NonNull Complex<T> other);
 
     /**
      * Subtracts another Complex number from this.
      * @param other another Complex number
      * @return a new Complex number representing the difference of the two numbers
      */
-    @NonNull public Complex<T> subtract (@NonNull Complex<? extends Number> other) {
+    @NonNull public Complex<T> subtract (@NonNull Complex<T> other) {
         return add(other.addInverse());
     }
 
@@ -68,7 +62,7 @@ public abstract class Complex <T extends Number> {
      * @param other another Complex number
      * @return a new Complex number representing the product of the two numbers
      */
-    @NonNull public abstract Complex<T> multiply (@NonNull Complex<? extends Number> other);
+    @NonNull public abstract Complex<T> multiply (@NonNull Complex<T> other);
 
     /**
      * Divides this by another complex number.  Should utilize the complement of the denominator
@@ -77,7 +71,7 @@ public abstract class Complex <T extends Number> {
      * @return a new Complex number representing the quotient of the two numbers
      * @throws ArithmeticException if denominator is zero
      */
-    @NonNull public Complex<T> divide (@NonNull Complex<? extends Number> denominator)
+    @NonNull public Complex<T> divide (@NonNull Complex<T> denominator)
             throws ArithmeticException {
         if (denominator.modulus().equals(0)) {
             throw new ArithmeticException("Attempted to divide by zero");
@@ -87,40 +81,23 @@ public abstract class Complex <T extends Number> {
 
     /**
      * Checks for equality with another Object.  Compares types and values up to a specific
-     * implementation of complex numbers, currently based on whether the distance between them
-     * is less than a threshold value (TARGET_PRECISION).
+     * implementation of complex numbers.
      * @param other the object to compare to
      * @return true if the same Object, or the comparison of Real-axis component to other, or false
-     *             if there is an unmatched complex component, or a presumptive true
+     *             if there is an unmatched complex component.
      */
+    @Override
     public boolean equals (Object other) {
-        // TODO: Rename this and re-impement equals with strict equality for Java specs
         /* Never equal to null */
         if (other == null) return false;
-        /* Reflexive equality check */
+            /* Reflexive equality check */
         else if (this == other) return true;
-        /* Begin external type checking */
-        else if (!(other instanceof Complex)) {
-            if (other instanceof Number) {
-                /* We are positively oriented on the Real number line,
-                 * and comparable to other Number types */
-                if (this.Argument().equals(0d)) {
-                    return this.modulus().doubleValue() == ((Number) other).doubleValue();
-                } else if (this.imaginary().doubleValue() < TARGET_PRECISION) {
-                    /* We are negatively oriented on the Real axis,
-                     * and comparable to other Number types */
-                    return this.addInverse().modulus().doubleValue() == ((Number) other).doubleValue();
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        /* End external type checking */
-        else {
-            Complex<T> diff = this.subtract((Complex<? extends Number>) other);
-            return diff.modulus().doubleValue() < TARGET_PRECISION;
+            /* Begin external type checking */
+        else if (other instanceof Complex<?>) {
+            Complex<?> o = (Complex<?>) other;
+            return (this.real().equals(o.real()) && this.imaginary().equals(o.imaginary()));
+        } else {
+            return false;
         }
     }
 
@@ -136,34 +113,43 @@ public abstract class Complex <T extends Number> {
      * @param exponent the desired exponent
      * @return a new Complex number representing the exponentiation result
      */
-    @NonNull public Complex<? extends Number> pow (@NonNull Complex<? extends Number> exponent) {
+    @NonNull public final Complex<T> pow (@NonNull Complex<T> exponent) {
         return Exp(Log(this).multiply(exponent));
     }
 
     /**
-     * Determines the principal complex Logarithm of this
+     * Determines the principal complex Logarithm of a supplied value.
+     * @param value the value of which to take the Logarithm.
+     * @return a new Complex number representing the Logarithm.
+     * @throws ArithmeticException if the modulus of value is zero.
+     */
+    @NonNull public static <S> Complex<S>.ComplexCartesian<?,?> Log (@NonNull Complex<S> value)
+            throws ArithmeticException {
+        return value.Log();
+    }
+
+    /**
+     * Determines the principal complex Logarithm of this.
      * @return a new Complex number representing the Logarithm
      * @throws ArithmeticException if the modulus of value is zero
      */
-    @NonNull public static Complex<? extends Number> Log (@NonNull Complex<? extends Number> value)
-            throws ArithmeticException {
-        if (value.modulus().equals(0d)) {
-            throw new ArithmeticException("Cannot take the logarithm of 0");
-        } else {
-            return new ComplexDoubleCartesian(Math.log(value.modulus().doubleValue()),
-                    value.Argument().doubleValue());
-        }
-    }
+    @NonNull abstract protected ComplexCartesian<?,?> Log ()
+            throws ArithmeticException;
 
     /**
      * Determines the principal exponentiation of the natural logarithm <i>e</i> to a given exponent.
      * @param exponent the desired exponent
      * @return a new Complex number representing the exponentiation result
      */
-    @NonNull public static Complex<? extends Number> Exp (@NonNull Complex<? extends Number> exponent) {
-        return new ComplexDoublePolar(exponent.imaginary().doubleValue(),
-                Math.exp(exponent.real().doubleValue()));
+    @NonNull public static <S> Complex<S>.ComplexPolar<?,?> Exp (@NonNull Complex<S> exponent) {
+        return exponent.Exp();
     }
+
+    /**
+     * Determines the principal exponentiation of the natural logarithm <i>e</i> to this as an exponent.
+     * @return a new Complex number representing the exponentiation result
+     */
+    @NonNull abstract protected ComplexPolar<?,?> Exp ();
 
     /**
      * Determines the principal <i>n</i>-th root of the given value
@@ -173,17 +159,20 @@ public abstract class Complex <T extends Number> {
      * @throws IllegalArgumentException if degree is zero
      */
     @NonNull
-    public static Complex<? extends Number> root (@NonNull Complex<? extends Number> value, int degree)
+    public static <S> Complex<S>.ComplexPolar<?,?> root (@NonNull Complex<S> value, int degree)
             throws IllegalArgumentException {
-        double modulus = rootNewton(value.modulus(), degree);
-        double Argument = value.Argument().doubleValue();
-        if (Argument == 0d) {
-            Argument = (Math.PI / degree) * 2d;
-        } else {
-            Argument = Argument / degree;
-        }
-        return new ComplexDoublePolar(Argument, modulus);
+        return value.root(degree);
     }
+
+    /**
+     * Determines the principal <i>n</i>-th root of this.
+     * @param degree the exponent <i>n</i> such that (root)^n=value
+     * @return a new Complex number with the principal n-th root
+     * @throws IllegalArgumentException if degree is zero
+     */
+    @NonNull
+    protected abstract ComplexPolar<?,?> root (int degree)
+            throws IllegalArgumentException;
 
     /**
      * Determines the principal <i>n</i>-th roots of the given value
@@ -193,20 +182,21 @@ public abstract class Complex <T extends Number> {
      * @throws IllegalArgumentException if degree is zero
      */
     @NonNull
-    public static List<Complex<? extends Number>> roots (@NonNull Complex<? extends Number> value,
-                                                         int degree) throws IllegalArgumentException {
-        List<Complex<? extends Number>> list = new ArrayList<>();
-        Complex<? extends Number> principal = root(value, degree);
-        double modulus = principal.modulus().doubleValue();
-        double argument = principal.Argument().doubleValue();
-        list.add(principal);
-        double argIncrement = (Math.PI / degree) * 2d;
-        for (int i = 1; i < degree; i++) {
-            argument += argIncrement;
-            list.add(new ComplexDoublePolar(argument, modulus));
-        }
-        return list;
+    public static <S> List<? extends Complex<S>.ComplexPolar<?,?>>
+        roots(@NonNull Complex<S> value, int degree)
+        throws IllegalArgumentException {
+        return value.roots(degree);
     }
+
+    /**
+     * Determines the principal <i>n</i>-th roots of the given value
+     * @param degree the exponent <i>n</i> such that (root)^n=value
+     * @return a new List of Complex numbers representing the <i>n</i> unique roots of value
+     * @throws IllegalArgumentException if degree is zero
+     */
+    @NonNull
+    public abstract List<? extends ComplexPolar<?,?>> roots (int degree)
+            throws IllegalArgumentException;
 
     /**
      * Formats the Complex number as a String.
@@ -230,46 +220,12 @@ public abstract class Complex <T extends Number> {
     @NonNull public abstract SpannedString toSpannedString();
 
     /**
-     * Computes the n-th root of a Real number.  Utilizes a exponent/logarithm computation to seed
-     * the guess and follows with a Newton algorithm (see
-     * <a href=https://en.wikipedia.org/wiki/Nth_root_algorithm>https://en.wikipedia.org/wiki/Nth_root_algorithm</a>)
-     * @param value a real number
-     * @param degree the degree of the root
-     * @return the real value such that raising it to degree yields value (within approximation)
-     * @throws IllegalArgumentException if value is negative
-     */
-    private static double rootNewton (@NonNull Number value, int degree)
-            throws IllegalArgumentException {
-        if (value.doubleValue() < 0) {
-            throw new IllegalArgumentException("Value should be a positive real number");
-        }
-        /* Short-circuit for roots of zero and one*/
-        if (0d == value.doubleValue()) return 0d;
-        else if (1d == value.doubleValue()) return 1d;
-
-        double decValue = 1d/degree;
-        int oneLess = degree - 1;
-        double delta = 1d;
-        double root = Math.exp(decValue*Math.log(value.doubleValue()));
-        while (delta > TARGET_PRECISION) {
-            double next = decValue * ((oneLess * root) + (value.doubleValue()/Math.pow(root, oneLess)));
-            delta = Math.abs(next - root);
-            root = next;
-        }
-        /* Coerce root to integer when appropriate */
-        int intValue = (int) root;
-        if (Math.pow(intValue, degree) == value.doubleValue()) root = intValue;
-        /* End integer coercion */
-        return root;
-    }
-
-    /**
      * Provides a differ for Complex numbers.
      * @param <Diff_T> The type of Complex numbers.
      * @return a differ with a speficied item and content diff check.
      */
     @NonNull
-    protected static <Diff_T extends Complex<? extends Number>> DiffUtil.ItemCallback<Diff_T> getDiffCallback() {
+    protected static <Diff_T extends Complex<?>> DiffUtil.ItemCallback<Diff_T> getDiffCallback() {
         return new Differ<>();
     }
 
@@ -277,7 +233,7 @@ public abstract class Complex <T extends Number> {
      * A differ to handle DiffUtil.ItemCallBack requests for Complex numbers.
      * @param <Diff_T> The type of Complex numbers.
      */
-    private static class Differ<Diff_T extends Complex<? extends Number>> extends DiffUtil.ItemCallback<Diff_T> {
+    private static class Differ<Diff_T extends Complex<?>> extends DiffUtil.ItemCallback<Diff_T> {
         @Override
         public boolean areItemsTheSame(@NonNull Diff_T oldItem, @NonNull Diff_T newItem) {
             return oldItem == newItem;
@@ -286,6 +242,88 @@ public abstract class Complex <T extends Number> {
         @Override
         public boolean areContentsTheSame(@NonNull Diff_T oldItem, @NonNull Diff_T newItem) {
             return oldItem.equals(newItem);
+        }
+    }
+
+    /**
+     * A representation of complex numbers using Cartesian coordinate values, and a set of operations
+     * for interacting with them.
+     * @param <Real_T> The type for representing real component values.
+     * @param <Imag_T> The type for representing imaginary component values.
+     * @author Justin Kearse
+     */
+    public abstract class ComplexCartesian<Real_T extends T, Imag_T extends T> extends Complex<T> {
+        /** The real-axis component of the Complex number. */
+        @NonNull
+        private final Real_T real;
+        /** The imaginary-axis component of the Complex number. */
+        @NonNull
+        private final Imag_T imaginary;
+
+        /**
+         * Constructs a new Complex number using supplied Cartesian coordinate values.
+         * @param real the real-axis component of the Complex number.
+         * @param imaginary the imaginary-axis component of the Complex number.
+         */
+        public ComplexCartesian(@NonNull Real_T real, @NonNull Imag_T imaginary) {
+            this.real = real;
+            this.imaginary = imaginary;
+        }
+
+        @NonNull
+        @Override
+        public final Real_T real() {
+            return this.real;
+        }
+
+        @NonNull
+        @Override
+        public final Imag_T imaginary() {
+            return this.imaginary;
+        }
+
+        @NonNull
+        @Override
+        public T argument() {
+            return Argument();
+        }
+    }
+
+    /**
+     * A representation of complex numbers using polar coordinate values, and a set of operations
+     * for interacting with them.
+     * @param <Arg_T> The type for representing argument values.
+     * @param <Mod_T> The type for representing modulus values.
+     * @author Justin Kearse
+     */
+    public abstract class ComplexPolar<Arg_T extends T, Mod_T extends T> extends Complex<T> {
+        /** The radian angular component of the Complex number. */
+        @NonNull
+        private final Arg_T argument;
+        /** The magnitude length component of the Complex number. */
+        @NonNull
+        private final Mod_T modulus;
+
+        /**
+         * Constructs a new Complex number using supplied polar coordinate values.
+         * @param argument the radian angular component of the Complex number.
+         * @param modulus the magnitude length component of the Complex number.
+         */
+        public ComplexPolar(@NonNull Arg_T argument, @NonNull Mod_T modulus) {
+            this.argument = argument;
+            this.modulus = modulus;
+        }
+
+        @NonNull
+        @Override
+        public final Mod_T modulus() {
+            return this.modulus;
+        }
+
+        @NonNull
+        @Override
+        public final Arg_T argument() {
+            return this.argument;
         }
     }
 }
