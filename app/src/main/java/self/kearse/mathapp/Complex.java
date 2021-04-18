@@ -123,7 +123,7 @@ public abstract class Complex<T> {
      * @return a new Complex number representing the Logarithm.
      * @throws ArithmeticException if the modulus of value is zero.
      */
-    @NonNull public static <S> Complex<S>.ComplexCartesian<?,?> Log (@NonNull Complex<S> value)
+    @NonNull public static <S> Complex<S> Log (@NonNull Complex<S> value)
             throws ArithmeticException {
         return value.Log();
     }
@@ -133,7 +133,7 @@ public abstract class Complex<T> {
      * @return a new Complex number representing the Logarithm
      * @throws ArithmeticException if the modulus of value is zero
      */
-    @NonNull abstract protected ComplexCartesian<?,?> Log ()
+    @NonNull abstract protected Complex<T> Log ()
             throws ArithmeticException;
 
     /**
@@ -141,7 +141,7 @@ public abstract class Complex<T> {
      * @param exponent the desired exponent
      * @return a new Complex number representing the exponentiation result
      */
-    @NonNull public static <S> Complex<S>.ComplexPolar<?,?> Exp (@NonNull Complex<S> exponent) {
+    @NonNull public static <S> Complex<S> Exp (@NonNull Complex<S> exponent) {
         return exponent.Exp();
     }
 
@@ -149,7 +149,7 @@ public abstract class Complex<T> {
      * Determines the principal exponentiation of the natural logarithm <i>e</i> to this as an exponent.
      * @return a new Complex number representing the exponentiation result
      */
-    @NonNull abstract protected ComplexPolar<?,?> Exp ();
+    @NonNull abstract protected Complex<T> Exp ();
 
     /**
      * Determines the principal <i>n</i>-th root of the given value
@@ -159,7 +159,7 @@ public abstract class Complex<T> {
      * @throws IllegalArgumentException if degree is zero
      */
     @NonNull
-    public static <S> Complex<S>.ComplexPolar<?,?> root (@NonNull Complex<S> value, int degree)
+    public static <S> Complex<S> root (@NonNull Complex<S> value, int degree)
             throws IllegalArgumentException {
         return value.root(degree);
     }
@@ -171,7 +171,7 @@ public abstract class Complex<T> {
      * @throws IllegalArgumentException if degree is zero
      */
     @NonNull
-    protected abstract ComplexPolar<?,?> root (int degree)
+    protected abstract Complex<T> root (int degree)
             throws IllegalArgumentException;
 
     /**
@@ -182,7 +182,7 @@ public abstract class Complex<T> {
      * @throws IllegalArgumentException if degree is zero
      */
     @NonNull
-    public static <S> List<? extends Complex<S>.ComplexPolar<?,?>>
+    public static <S> List<? extends Complex<S>>
         roots(@NonNull Complex<S> value, int degree)
         throws IllegalArgumentException {
         return value.roots(degree);
@@ -195,7 +195,7 @@ public abstract class Complex<T> {
      * @throws IllegalArgumentException if degree is zero
      */
     @NonNull
-    public abstract List<? extends ComplexPolar<?,?>> roots (int degree)
+    public abstract List<? extends Complex<T>> roots (int degree)
             throws IllegalArgumentException;
 
     /**
@@ -245,85 +245,89 @@ public abstract class Complex<T> {
         }
     }
 
-    /**
+    /*
      * A representation of complex numbers using Cartesian coordinate values, and a set of operations
-     * for interacting with them.
+     * for interacting with them.  NOTE: As much as I would like to think I could apply this, I think
+     * due to Java's strict inheritance rules the Cartesian variant will have to be deferred to the
+     * implementing classes for Complex.
      * @param <Real_T> The type for representing real component values.
      * @param <Imag_T> The type for representing imaginary component values.
      * @author Justin Kearse
      */
-    public abstract class ComplexCartesian<Real_T extends T, Imag_T extends T> extends Complex<T> {
-        /** The real-axis component of the Complex number. */
-        @NonNull
-        private final Real_T real;
-        /** The imaginary-axis component of the Complex number. */
-        @NonNull
-        private final Imag_T imaginary;
+//    public abstract class ComplexCartesian<Real_T extends T, Imag_T extends T> extends Complex<T> {
+//        /** The real-axis component of the Complex number. */
+//        @NonNull
+//        private final Real_T real;
+//        /** The imaginary-axis component of the Complex number. */
+//        @NonNull
+//        private final Imag_T imaginary;
+//
+//        /**
+//         * Constructs a new Complex number using supplied Cartesian coordinate values.
+//         * @param real the real-axis component of the Complex number.
+//         * @param imaginary the imaginary-axis component of the Complex number.
+//         */
+//        public ComplexCartesian(@NonNull Real_T real, @NonNull Imag_T imaginary) {
+//            this.real = real;
+//            this.imaginary = imaginary;
+//        }
+//
+//        @NonNull
+//        @Override
+//        public final Real_T real() {
+//            return this.real;
+//        }
+//
+//        @NonNull
+//        @Override
+//        public final Imag_T imaginary() {
+//            return this.imaginary;
+//        }
+//
+//        @NonNull
+//        @Override
+//        public T argument() {
+//            return Argument();
+//        }
+//    }
 
-        /**
-         * Constructs a new Complex number using supplied Cartesian coordinate values.
-         * @param real the real-axis component of the Complex number.
-         * @param imaginary the imaginary-axis component of the Complex number.
-         */
-        public ComplexCartesian(@NonNull Real_T real, @NonNull Imag_T imaginary) {
-            this.real = real;
-            this.imaginary = imaginary;
-        }
-
-        @NonNull
-        @Override
-        public final Real_T real() {
-            return this.real;
-        }
-
-        @NonNull
-        @Override
-        public final Imag_T imaginary() {
-            return this.imaginary;
-        }
-
-        @NonNull
-        @Override
-        public T argument() {
-            return Argument();
-        }
-    }
-
-    /**
+    /*
      * A representation of complex numbers using polar coordinate values, and a set of operations
-     * for interacting with them.
+     * for interacting with them.  NOTE: As much as I would like to think I could apply this, I think
+     * due to Java's strict inheritance rules the Cartesian variant will have to be deferred to the
+     * implementing classes for Complex.
      * @param <Arg_T> The type for representing argument values.
      * @param <Mod_T> The type for representing modulus values.
      * @author Justin Kearse
      */
-    public abstract class ComplexPolar<Arg_T extends T, Mod_T extends T> extends Complex<T> {
-        /** The radian angular component of the Complex number. */
-        @NonNull
-        private final Arg_T argument;
-        /** The magnitude length component of the Complex number. */
-        @NonNull
-        private final Mod_T modulus;
-
-        /**
-         * Constructs a new Complex number using supplied polar coordinate values.
-         * @param argument the radian angular component of the Complex number.
-         * @param modulus the magnitude length component of the Complex number.
-         */
-        public ComplexPolar(@NonNull Arg_T argument, @NonNull Mod_T modulus) {
-            this.argument = argument;
-            this.modulus = modulus;
-        }
-
-        @NonNull
-        @Override
-        public final Mod_T modulus() {
-            return this.modulus;
-        }
-
-        @NonNull
-        @Override
-        public final Arg_T argument() {
-            return this.argument;
-        }
-    }
+//    public abstract class ComplexPolar<Arg_T extends T, Mod_T extends T> extends Complex<T> {
+//        /** The radian angular component of the Complex number. */
+//        @NonNull
+//        private final Arg_T argument;
+//        /** The magnitude length component of the Complex number. */
+//        @NonNull
+//        private final Mod_T modulus;
+//
+//        /**
+//         * Constructs a new Complex number using supplied polar coordinate values.
+//         * @param argument the radian angular component of the Complex number.
+//         * @param modulus the magnitude length component of the Complex number.
+//         */
+//        public ComplexPolar(@NonNull Arg_T argument, @NonNull Mod_T modulus) {
+//            this.argument = argument;
+//            this.modulus = modulus;
+//        }
+//
+//        @NonNull
+//        @Override
+//        public final Mod_T modulus() {
+//            return this.modulus;
+//        }
+//
+//        @NonNull
+//        @Override
+//        public final Arg_T argument() {
+//            return this.argument;
+//        }
+//    }
 }
