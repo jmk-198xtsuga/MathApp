@@ -81,9 +81,9 @@ public class Topic<F extends TopicFragment> {
                 NumericalRepresentationFragment.class));
         allTopics.add(new Topic<>("Data Retention Demo",
                 DataRetentionDemoFragment.class));
-        allTopics.add(new Topic<>("Complex Roots",
+        allTopics.add(new Topic<>("ComplexNumber Roots",
                 ComplexRootsFragment.class));
-//        allTopics.add(new Topic("Complex Plane", ComplexPlaneFragment.class));
-//        allTopics.add(new Topic("Basic Operations", BasicOperationsFragment.class));
+//        allTopics.add(new Topic("ComplexNumber Plane", ComplexPlaneFragment.class));
+        allTopics.add(new Topic<>("Basic Operations", BasicOperationsFragment.class));
     }
 }

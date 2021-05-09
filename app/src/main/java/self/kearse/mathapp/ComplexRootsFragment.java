@@ -14,16 +14,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil.ItemCallback;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/** Android fragment for displaying information about Complex roots. */
+/** Android fragment for displaying information about ComplexNumber roots. */
 public class ComplexRootsFragment extends TopicFragment {
     /** ViewModel for the complex number and roots list. */
     private ComplexRootsFragmentViewModel mViewModel;
@@ -54,7 +55,7 @@ public class ComplexRootsFragment extends TopicFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         RecyclerView rootsList;
-        final RootsListAdapter<Complex<? extends Number>> rootsAdapter;
+        final RootsListAdapter rootsAdapter;
         RecyclerView.LayoutManager layoutManager;
 
         super.onViewCreated(view, savedInstanceState);
@@ -63,19 +64,16 @@ public class ComplexRootsFragment extends TopicFragment {
         rootsList.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         rootsList.setLayoutManager(layoutManager);
-        rootsAdapter = new RootsListAdapter<>();
-        mViewModel.getRootList().observe(getViewLifecycleOwner(), new Observer<List<Complex<? extends Number>>>() {
-            @Override
-            public void onChanged(List<Complex<? extends Number>> list) {
-                rootsAdapter.submitList(list);
-            }
-        });
+        rootsAdapter = new RootsListAdapter();
+        mViewModel.getRootList().observe(getViewLifecycleOwner(),
+                list -> rootsAdapter.submitList(list)
+        );
         rootsList.setAdapter(rootsAdapter);
         EditText inputReal = view.findViewById(R.id.inputReal);
         EditText inputComplex = view.findViewById(R.id.inputComplex);
         EditText inputDegree = view.findViewById(R.id.inputDegree);
-        Complex<? extends Number> root = mViewModel.getNumber().getValue();
-        List<Complex<? extends Number>> roots = mViewModel.getRootList().getValue();
+        Complex<?> root = mViewModel.getNumber().getValue();
+        List<? extends Complex<?>> roots = mViewModel.getRootList().getValue();
         if (root != null && roots != null) {
             inputReal.setText(root.real().toString());
             inputComplex.setText(root.imaginary().toString());
@@ -83,10 +81,10 @@ public class ComplexRootsFragment extends TopicFragment {
         }
     }
 
-    /** Listener class for the Update button that computes the roots of a given Complex number. */
+    /** Listener class for the Update button that computes the roots of a given ComplexNumber number. */
     class UpdateClickListener implements View.OnClickListener {
         /**
-         * Computes the roots of a given Complex number when the button is clicked.
+         * Computes the roots of a given ComplexNumber number when the button is clicked.
          * @param v The view for which a click was detected.
          */
         @Override
@@ -102,7 +100,10 @@ public class ComplexRootsFragment extends TopicFragment {
                         Double dblReal = Double.parseDouble(real.getText().toString());
                         Double dblImaginary = Double.parseDouble(imaginary.getText().toString());
                         Integer intDegree = Integer.parseInt(degree.getText().toString());
-                        mViewModel.updateData(new ComplexDoubleCartesian(dblReal, dblImaginary), intDegree);
+                        mViewModel.updateData(
+                                new ComplexNumber.ComplexCartesian<>(dblReal, dblImaginary),
+                                intDegree
+                        );
                     }
                 }
             }
@@ -148,6 +149,7 @@ public class ComplexRootsFragment extends TopicFragment {
             if ("".equals(s.toString())) {
                 textView.setError("Value Required");
             }
+            else textView.setError(null);
         }
 
         /**
@@ -176,18 +178,19 @@ public class ComplexRootsFragment extends TopicFragment {
 
     /** A ViewModel class for ComplexRootsFragment. */
     public static class ComplexRootsFragmentViewModel extends androidx.lifecycle.ViewModel {
+        private static final Complex<?> defaultNumber = new ComplexNumber.ComplexCartesian<>(1d,0d);
         /** The number of which roots are computed. */
-        @NonNull private static final MutableLiveData<Complex<? extends Number>> ofNumber =
-                new MutableLiveData<Complex<? extends Number>>(new ComplexDoubleCartesian(1d, 0d));
+        @NonNull private static final MutableLiveData<Complex<?>> ofNumber =
+                new MutableLiveData<>(defaultNumber);
         /** The root which is currently focused on in the RecyclerView, to conserve scroll position. */
         private static final MutableLiveData<Integer> focusedRoot = new MutableLiveData<>(0);
         /** The list of roots to display. */
-        @NonNull private static final MutableLiveData<List<Complex<? extends Number>>> rootList =
-                new MutableLiveData<>(Complex.roots(ofNumber.getValue(), 2));
+        @NonNull private static final MutableLiveData<List<Complex<?>>> rootList =
+                new MutableLiveData<>(new ArrayList<>(defaultNumber.roots(2)));
 
         /** The number of which roots are computed. */
         @NonNull
-        LiveData<? extends Complex<? extends Number>> getNumber() {
+        LiveData<Complex<?>> getNumber() {
             return ofNumber;
         }
         /** The root which is currently focused on in the RecyclerView. */
@@ -197,38 +200,37 @@ public class ComplexRootsFragment extends TopicFragment {
         }
         /** The list of roots to display. */
         @NonNull
-        LiveData<List<Complex<? extends Number>>> getRootList() {
+        LiveData<List<Complex<?>>> getRootList() {
             return rootList;
         }
 
         /**
-         * Updates the information in the ViewModel with a new Complex number and new list of roots.
+         * Updates the information in the ViewModel with a new ComplexNumber number and new list of roots.
          * @param newNumber The new number of which roots will be computed.
          * @param degree The degree (or quantity) of roots to generate.
          */
-        void updateData(@NonNull Complex<? extends Number> newNumber, @NonNull Integer degree) {
+        void updateData(@NonNull Complex<?> newNumber, @NonNull Integer degree) {
             ofNumber.setValue(newNumber);
             focusedRoot.setValue(0);
-            rootList.postValue(Complex.roots(newNumber, degree));
+            rootList.postValue(new ArrayList<>(newNumber.roots(degree)));
         }
     }
 
     /**
-     * Display adapter for RecyclerView that presents the list of Complex numbers.
-     * @param <T> Complex or any extended type thereof, for the numbers in the list.
+     * Display adapter for RecyclerView that presents the list of ComplexNumber numbers.
      */
-    public static class RootsListAdapter<T extends Complex<? extends Number>> extends ListAdapter<T, RootsListAdapter.ViewHolder> {
+    public static class RootsListAdapter extends ListAdapter<Complex<?>, RootsListAdapter.ViewHolder> {
         /**
          * Prepares a RootsListAdapter with a specified callback.
          * @param diffCallback A DiffUtil callback to see when items change.
          */
-        protected RootsListAdapter(@NonNull ItemCallback<T> diffCallback) {
+        protected RootsListAdapter(@NonNull ItemCallback<Complex<?>> diffCallback) {
             super(diffCallback);
         }
 
-        /** Prepares a RootsListAdapter with the default callback from Complex. */
+        /** Prepares a RootsListAdapter with the default callback from ComplexNumber. */
         protected RootsListAdapter() {
-            this(Complex.<T>getDiffCallback());
+            this(Complex.getDiffCallback());
         }
 
         /** Generates a new ViewHolder using a basic TextView. */
@@ -237,11 +239,10 @@ public class ComplexRootsFragment extends TopicFragment {
         public RootsListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             TextView v = (TextView) LayoutInflater.from(parent.getContext()).
                     inflate(android.R.layout.simple_list_item_1, parent, false);
-            RootsListAdapter.ViewHolder vh = new RootsListAdapter.ViewHolder(v);
-            return vh;
+            return new ViewHolder(v);
         }
 
-        /** Sets the ViewHolder's TextView to the SpannedString formatted Complex number. */
+        /** Sets the ViewHolder's TextView to the SpannedString formatted ComplexNumber number. */
         @Override
         public void onBindViewHolder(@NonNull RootsListAdapter.ViewHolder holder, int position) {
             holder.textView.setText(getItem(position).toSpannedString(), TextView.BufferType.SPANNABLE);
@@ -259,10 +260,22 @@ public class ComplexRootsFragment extends TopicFragment {
             }
         }
     }
+
+/*    private void fuckery() {
+        MutableLiveData<List<? extends Complex<?>>> taco = new MutableLiveData<>();
+        taco.setValue(new ArrayList<ComplexNumber>());
+        List<? extends Complex<?>> beta = taco.getValue();
+        taco.observe(getViewLifecycleOwner(), new Observer<List<? extends Complex<?>>>() {
+            @Override
+            public void onChanged(List<? extends Complex<?>> complexes) {
+                taco.setValue(complexes);
+            }
+        })
+    }*/
 }
 
-//TODO: Review everything to see that the use of Complex<T> versus Complex<? extends Number> is correct
+//TODO: Review everything to see that the use of ComplexNumber<T> versus ComplexNumber<? extends Number> is correct
 
-//TODO: Review everything to see that the use of List<? extends Complex<>> versus List<Complex<>> is correct
+//TODO: Review everything to see that the use of List<? extends ComplexNumber<>> versus List<ComplexNumber<>> is correct
 
 //TODO: layout improvement for when a small screen is landscape, potentially with a pop-up RecyclerView.

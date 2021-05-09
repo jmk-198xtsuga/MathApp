@@ -20,7 +20,7 @@ public abstract class ComplexNumber extends Complex<Number> {
     /** The allowed error for certain methods and algorithms */
     private static final double TARGET_PRECISION = 1E-13;
 
-    @NonNull @Override public ComplexCartesian<Double,Double> add(Complex<Number> other) {
+    @NonNull @Override public ComplexCartesian<Double,Double> add(@NonNull Complex<Number> other) {
         return new ComplexCartesian<>(real().doubleValue() + other.real().doubleValue(),
                 imaginary().doubleValue() + other.imaginary().doubleValue());
     }

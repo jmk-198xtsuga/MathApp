@@ -1,20 +1,19 @@
 package self.kearse.mathapp;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link NumericalRepresentationFragment#newInstance} factory method to
+ * Use the {@link BasicOperationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NumericalRepresentationFragment extends TopicFragment {
+public class BasicOperationsFragment extends TopicFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,7 +24,7 @@ public class NumericalRepresentationFragment extends TopicFragment {
     private String mParam1;
     private String mParam2;
 
-    public NumericalRepresentationFragment() {
+    public BasicOperationsFragment() {
         // Required empty public constructor
     }
 
@@ -38,8 +37,8 @@ public class NumericalRepresentationFragment extends TopicFragment {
      * @return A new instance of fragment NumericalRepresentationFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NumericalRepresentationFragment newInstance(String param1, String param2) {
-        NumericalRepresentationFragment fragment = new NumericalRepresentationFragment();
+    public static BasicOperationsFragment newInstance(String param1, String param2) {
+        BasicOperationsFragment fragment = new BasicOperationsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -47,13 +46,13 @@ public class NumericalRepresentationFragment extends TopicFragment {
         return fragment;
     }
 
-    public static NumericalRepresentationFragment newInstance(Bundle bundle)
+    public static BasicOperationsFragment newInstance(Bundle bundle)
         throws IllegalArgumentException {
         if (bundle == null) throw new IllegalArgumentException("null savedInstanceState");
         else if (bundle.getString(ARG_PARAM1) == null || bundle.getString(ARG_PARAM2) == null)
             throw new IllegalArgumentException("savedInstanceState missing expected tokens");
         else {
-            NumericalRepresentationFragment fragment = new NumericalRepresentationFragment();
+            BasicOperationsFragment fragment = new BasicOperationsFragment();
             fragment.setArguments(bundle);
             return fragment;
         }
@@ -72,13 +71,7 @@ public class NumericalRepresentationFragment extends TopicFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_numerical_representation, container, false);
-        TextView textCartesian = view.findViewById(R.id.textCartesianNumber);
-        TextView textPolar = view.findViewById(R.id.textPolarNumber);
-        ComplexNumber mixCartesian = new ComplexNumber.ComplexCartesian<>(1d, 1d);
-        ComplexNumber mixPolar = new ComplexNumber.ComplexPolar<>(Math.PI / 4d, Math.sqrt(2));
-        textCartesian.setText(mixCartesian.toSpannedString(), TextView.BufferType.SPANNABLE);
-        textPolar.setText(mixPolar.toSpannedString(), TextView.BufferType.SPANNABLE);
+        View view = inflater.inflate(R.layout.fragment_basic_operations, container, false);
         return view;
     }
 }

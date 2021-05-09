@@ -36,4 +36,10 @@
     </string>
     <string name="cartesian_representation">Cartesian Representation</string>
     <string name="polar_representation">Polar Representation</string>
+    <string name="basic_operations_header">Basic Operations</string>
+    <string name="basic_operations_body">Among the complex numbers there are several basic
+        operations, such as addition, multiplication, and exponentiation.  There are also some
+        operations that draw from vector mathematics, such as taking the magnitude of the number or
+        extracting out some component of the number (i.e. Arg()).\n\nTo learn more about these
+        operations, click on one in the list below.</string>
 </resources>
